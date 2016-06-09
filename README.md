@@ -132,14 +132,27 @@ g.Run()
  - [x] Get
  - [x] Count
  - [x] Insert
+- [ ] Join
+ - [ ] Inner join
+ - [ ] Outer join
+ - [ ] Left join
+ - [ ] Right join
 - [ ] Update
 - [ ] Delete
+- [x] Transaction
+ - [x] begin
+ - [x] commit
+ - [x] rollback
 
 The BuilderInterface at model/interface_builder.go
 
 ### Roadmap
 - [ ] Models
- - [ ] MySQL
+ - [ ] Model fields mapping
+ - [ ] ORM
+ - [ ] Relation mapping
+ - [x] Transaction
+ - [ ] QueryBuilder
 - [ ] Session
  - [ ] Filesystem
  - [ ] Database
@@ -151,6 +164,9 @@ The BuilderInterface at model/interface_builder.go
  - [ ] Redis
  - [ ] Memcache
 - [ ] i18n
+- [ ] Command line tools
+- [ ] Form handler (maybe next version)
+- [ ] Security check features(csrf, xss filter...etc)
 
 
 [httprouter]: <https://github.com/julienschmidt/httprouter>
