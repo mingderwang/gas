@@ -45,12 +45,13 @@ var (
 
 	// testG *goslim.Goslim
 
+	// for travis-ci default mysql username and password
 	testConfig = map[string]string{
 		"sqldriver": "MySQL",
 		"protocol":  "tcp",
 		"hostname":  "localhost",
 		"username":  "root",
-		"password":  "",
+		"password":  "123456",
 		"dbname":    "test",
 		"charset":   "utf8",
 	}
@@ -231,8 +232,39 @@ func TestModelRead(t *testing.T) {
 
 }
 
-func TestSelect(t *testing.T) {
-	// m := testG.NewModel()
+func TestMySQLBuilder_Select(t *testing.T) {
+	tt, err := testM.Builder().Get(&testUser{})
+
+	if err != nil {
+		println(err.Error())
+	}
+
+	// aspect sql
+	asql := "SELECT * FROM testuser"
+
+	as := assert.New(t)
+	as.Nil(err)
+	as.Equal("Herb", tt[0]["name"])
+	as.Equal("1", tt[0]["id"])
+	as.Equal(asql, testM.Builder().getLastSQL())
+}
+
+func TestMySQLBuilder_SelectWithColumn(t *testing.T) {
+	setest, err := testM.Builder().Select("name", "password").Where("id = ?", 1).Get(&testUser{})
+	if err != nil {
+		println(err.Error())
+	}
+
+	asql := "SELECT name, password FROM testuser WHERE id = ?"
+
+	as := assert.New(t)
+	as.Nil(err)
+	as.Equal("Herb", setest[0]["name"])
+	as.Equal("", setest[0]["id"])
+	as.Equal(asql, testM.Builder().getLastSQL())
+}
+
+func TestMySQLBuilder_Where(t *testing.T) {
 	tt, err := testM.Builder().Where("id = ?", 1).Get(&testUser{})
 
 	if err != nil {
@@ -247,134 +279,157 @@ func TestSelect(t *testing.T) {
 	as.Equal("Herb", tt[0]["name"])
 	as.Equal("1", tt[0]["id"])
 	as.Equal(asql, testM.Builder().getLastSQL())
+}
 
-	// test select column
-	setest, err := testM.Builder().Select("name", "password").Where("id = ?", 1).Get(&testUser{})
-	if err != nil {
-		println(err.Error())
-	}
-
-	asql = "SELECT name, password FROM testuser WHERE id = ?"
-
-	as.Nil(err)
-	as.Equal("Herb", setest[0]["name"])
-	as.Equal("", setest[0]["id"])
-	as.Equal(asql, testM.Builder().getLastSQL())
-
+func TestMySQLBuilder_Distinct(t *testing.T) {
 	// test distinct
-	_, err = testM.Builder().Distinct("name", "password").Where("id = ?", 1).Get(&testUser{})
+	_, err := testM.Builder().Distinct("name", "password").Where("id = ?", 1).Get(&testUser{})
 	if err != nil {
 		println(err.Error())
 	}
 
-	asql = "SELECT DISTINCT name, password FROM testuser WHERE id = ?"
+	asql := "SELECT DISTINCT name, password FROM testuser WHERE id = ?"
 
+	as := assert.New(t)
 	as.Nil(err)
-	// as.Equal("Herb", setest[0]["name"])
-	// as.Equal("", setest[0]["id"])
 	as.Equal(asql, testM.Builder().getLastSQL())
+}
 
+func TestMySQLBuilder_AndWhere(t *testing.T) {
+
+}
+
+func TestMySQLBuilder_OrWhere(t *testing.T) {
+
+}
+
+func TestMySQLBuilder_AndWherePlusOrwhere(t *testing.T) {
 	// test and or where
-	_, err = testM.Builder().Where("id = ?", 1).AndWhere("name = ?", "Herb").OrWhere("id = ?", 2).Get(&testUser{})
+	tt, err := testM.Builder().Where("id = ?", 1).AndWhere("name = ?", "Herb").OrWhere("id = ?", 2).Get(&testUser{})
 	if err != nil {
 		println(err.Error())
 	}
 
-	asql = "SELECT * FROM testuser WHERE (id = ? AND name = ?) OR id = ?"
+	asql := "SELECT * FROM testuser WHERE (id = ? AND name = ?) OR id = ?"
 
+	as := assert.New(t)
 	as.Nil(err)
 	as.Equal("Herb", tt[0]["name"])
 	as.Equal(asql, testM.Builder().getLastSQL())
+}
 
+func TestMySQLBuilder_GroupBy(t *testing.T) {
 	// test group by
-	_, err = testM.Builder().GroupBy("name", "age").Get(&testUser{})
+	_, err := testM.Builder().GroupBy("name", "age").Get(&testUser{})
 
 	if err != nil {
 		println(err.Error())
 	}
 
-	asql = "SELECT * FROM testuser GROUP BY name, age"
+	asql := "SELECT * FROM testuser GROUP BY name, age"
 
+	as := assert.New(t)
 	as.Nil(err)
 	// as.Equal("Herb", tt[0]["name"])
 	as.Equal(asql, testM.Builder().getLastSQL())
+}
 
+func TestMySQLBuilder_Having(t *testing.T) {
 	// test having
-	_, err = testM.Builder().Having("id = ?", 1).Get(&testUser{})
+	_, err := testM.Builder().Having("id = ?", 1).Get(&testUser{})
 
 	if err != nil {
 		println(err.Error())
 	}
 
-	asql = "SELECT * FROM testuser HAVING id = ?" // anti pattern just for test
+	asql := "SELECT * FROM testuser HAVING id = ?" // anti pattern just for test
 
+	as := assert.New(t)
 	as.Nil(err)
 	// as.Equal("Herb", tt[0]["name"])
 	as.Equal(asql, testM.Builder().getLastSQL())
 
+}
+
+func TestMySQLBuilder_OrderBy(t *testing.T) {
 	// test order by
-	_, err = testM.Builder().OrderBy("id DESC").Asc("name").Desc("password").Get(&testUser{})
+	_, err := testM.Builder().OrderBy("id DESC").Asc("name").Desc("password").Get(&testUser{})
 
 	if err != nil {
 		println(err.Error())
 	}
 
-	asql = "SELECT * FROM testuser ORDER BY id DESC, name ASC, password DESC"
+	asql := "SELECT * FROM testuser ORDER BY id DESC, name ASC, password DESC"
 
+	as := assert.New(t)
 	as.Nil(err)
 	// as.Equal("Herb", tt[0]["name"])
 	as.Equal(asql, testM.Builder().getLastSQL())
+}
 
+func TestMySQLBuilder_Limit(t *testing.T) {
 	// test limit
-	_, err = testM.Builder().Limit(1).Get(&testUser{})
+	_, err := testM.Builder().Limit(1).Get(&testUser{})
 
 	if err != nil {
 		println(err.Error())
 	}
 
-	asql = "SELECT * FROM testuser LIMIT 1"
+	asql := "SELECT * FROM testuser LIMIT 1"
 
+	as := assert.New(t)
 	as.Nil(err)
 	// as.Equal("Herb", tt[0]["name"])
 	as.Equal(asql, testM.Builder().getLastSQL())
 
-	_, err = testM.Builder().Limit(1, 2).Get(&testUser{})
+
+}
+
+func TestMySQLBuilder_Limit2(t *testing.T) {
+	_, err := testM.Builder().Limit(1, 2).Get(&testUser{})
 
 	if err != nil {
 		println(err.Error())
 	}
 
-	asql = "SELECT * FROM testuser LIMIT 2, 1"
+	asql := "SELECT * FROM testuser LIMIT 2, 1"
 
+	as := assert.New(t)
 	as.Nil(err)
 	// as.Equal("Herb", tt[0]["name"])
 	as.Equal(asql, testM.Builder().getLastSQL())
+}
 
+func TestMySQLBuilder_Count(t *testing.T) {
 	// test count
-	_, err = testM.Builder().Count().Get(&testUser{})
+	_, err := testM.Builder().Count().Get(&testUser{})
 
 	if err != nil {
 		println(err.Error())
 	}
 
-	asql = "SELECT COUNT(*) FROM testuser"
+	asql := "SELECT COUNT(*) FROM testuser"
 
+	as := assert.New(t)
 	as.Nil(err)
 	// as.Equal("Herb", tt[0]["name"])
 	as.Equal(asql, testM.Builder().getLastSQL())
 
-	_, err = testM.Builder().Count("Distinct age").Get(&testUser{})
+}
+
+func TestMySQLBuilder_CountWithDistinct(t *testing.T) {
+	_, err := testM.Builder().Count("Distinct age").Get(&testUser{})
 
 	if err != nil {
 		println(err.Error())
 	}
 
-	asql = "SELECT COUNT(Distinct age) FROM testuser"
+	asql := "SELECT COUNT(Distinct age) FROM testuser"
 
+	as := assert.New(t)
 	as.Nil(err)
 	// as.Equal("Herb", tt[0]["name"])
 	as.Equal(asql, testM.Builder().getLastSQL())
-
 }
 
 // func TestModelUpdate(t *testing.T) {
