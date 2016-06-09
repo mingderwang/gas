@@ -1,0 +1,11 @@
+listenaddr: localhost
+listenport: 8080
+pubdir: static
+db:
+    sqldriver: MySQL
+    protocal: tcp
+    hostname: localhost
+    username: root
+    password: 123456
+    dbname: test
+    charset: utf8

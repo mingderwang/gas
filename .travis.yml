@@ -1,0 +1,18 @@
+language: go
+
+go:
+  - 1.6
+  - tip
+
+services:
+  - mysql
+  
+before_install:
+  - mysql -e "create database IF NOT EXISTS test;" -uroot
+  - mysql -uroot test < testfiles/test.sql
+
+script:
+  - go test -v .
+  - go test -v ./model
+  - go test -v ./validator
+  
