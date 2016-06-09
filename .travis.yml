@@ -9,8 +9,8 @@ services:
   
 before_install:
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('123456') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
-  - mysql -e "create database IF NOT EXISTS test;" -uroot
-  - mysql -uroot test < testfiles/test.sql
+  - mysql -e "create database IF NOT EXISTS test;" -uroot -p123456
+  - mysql -uroot -p123456 test < testfiles/test.sql
 
 script:
   - go test -v .
