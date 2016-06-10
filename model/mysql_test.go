@@ -111,7 +111,7 @@ func TestMain(m *testing.M) {
 //     as.NotNil(incId)
 // }
 
-func TestInsert(t *testing.T) {
+func TestMySQLModel_Insert(t *testing.T) {
 	tu := &testUser{
 		Name:     testUserData["Name"].(string),
 		Password: testUserData["Password"].(string),
@@ -128,7 +128,7 @@ func TestInsert(t *testing.T) {
 	as.NotEqual(0, lastID)
 }
 
-func TestMultiInsert(t *testing.T) {
+func TestMySQLModel_MultiInsert(t *testing.T) {
 	tu1 := &testUser{
 		Name:     testUserData["Name"].(string),
 		Password: testUserData["Password"].(string),
@@ -151,7 +151,7 @@ func TestMultiInsert(t *testing.T) {
 	as.Equal(2, len(lastIDs))
 }
 
-func TestTransaction(t *testing.T) {
+func TestMySQLModel_TransactionRollback(t *testing.T) {
 	// test Rollback
 	tu := &testUser{
 		Name:     testUserData["Name"].(string),
@@ -186,14 +186,22 @@ func TestTransaction(t *testing.T) {
 	as := assert.New(t)
 	as.Nil(err)
 	as.Equal(0, len(tt))
+}
 
+func TestMySQLModel_TransactionCommit(t *testing.T) {
 	// test commit
+	tu := &testUser{
+		Name:     testUserData["Name"].(string),
+		Password: testUserData["Password"].(string),
+		Age:      testUserData["Age"].(int),
+	}
+
 	// start transaction
 	if err := testM.TransactionStart(); err != nil {
 		panic(err.Error())
 	}
 
-	lastID, err = testM.Insert(tu)
+	lastID, err := testM.Insert(tu)
 	if err != nil {
 		println(err.Error())
 	}
@@ -204,7 +212,7 @@ func TestTransaction(t *testing.T) {
 	}
 
 	// find row
-	tt, err = testM.Builder().Where("id = ?", lastID).Get(&testUser{})
+	tt, err := testM.Builder().Where("id = ?", lastID).Get(&testUser{})
 
 	if err != nil {
 		println(err.Error())
@@ -212,24 +220,10 @@ func TestTransaction(t *testing.T) {
 
 	// fmt.Println(tt)
 
+	as := assert.New(t)
 	as.Nil(err)
 	as.Equal(1, len(tt))
 	as.Equal(testUserData["Name"].(string), tt[0]["name"])
-
-}
-
-func TestModelRead(t *testing.T) {
-	// m := testG.NewModel()
-	tt, err := testM.Builder().Where("id = ?", 1).Get(&testUser{})
-
-	if err != nil {
-		println(err.Error())
-	}
-
-	as := assert.New(t)
-	as.Nil(err)
-	as.Equal("Herb", tt[0]["name"])
-
 }
 
 func TestMySQLBuilder_Select(t *testing.T) {

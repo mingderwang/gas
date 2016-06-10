@@ -16,7 +16,7 @@ var (
 	}
 )
 
-func TestValidator(t *testing.T) {
+func TestValidator_Validate(t *testing.T) {
 	as := assert.New(t)
 
 	v := Validator{}
