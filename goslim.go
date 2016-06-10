@@ -68,7 +68,11 @@ type (
 )
 
 // New goslim Object
-func New() *Goslim {
+//
+// Ex:
+//  g := New()
+//  g.Run()
+func New(configPath ...string) *Goslim {
 	g := &Goslim{}
 
 	// init logger
@@ -90,7 +94,16 @@ func New() *Goslim {
 		ListenPort: "8080",
 		PubDir:     "public",
 	}
-	g.Config.loadConfig("config/default.yaml")
+	if len(configPath) == 0 {
+		configPath = []string {"config/default.yaml"}
+	}
+
+	// Only load first config (maybe load multi config next version)
+	err := g.Config.loadConfig(configPath[0])
+	if err != nil {
+		panic(err.Error())
+	}
+
 
 	// set router
 	g.Router = &Router{g: g}

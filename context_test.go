@@ -30,7 +30,7 @@ func TestRender(t *testing.T) {
 	as := assert.New(t)
 
 	// new goslim
-	g := New()
+	g := New("testfiles/config_test.yaml")
 
 	// set route
 	g.Router.Get("/", func(ctx *Context) error {
@@ -51,7 +51,7 @@ func TestHTML(t *testing.T) {
 	as := assert.New(t)
 
 	// new goslim
-	g := New()
+	g := New("testfiles/config_test.yaml")
 
 	// set route
 	g.Router.Get("/", func(ctx *Context) error {
@@ -72,7 +72,7 @@ func TestSTRINGResponse(t *testing.T) {
 	as := assert.New(t)
 
 	// new goslim
-	g := New()
+	g := New("testfiles/config_test.yaml")
 
 	// set route
 	g.Router.Get("/", func(ctx *Context) error {
@@ -93,7 +93,7 @@ func TestJSONResponse(t *testing.T) {
 	as := assert.New(t)
 
 	// new goslim
-	g := New()
+	g := New("testfiles/config_test.yaml")
 
 	// set route
 	g.Router.Get("/", func(ctx *Context) error {

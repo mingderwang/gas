@@ -16,7 +16,7 @@ func TestGoslim(t *testing.T) {
 	assert := assert.New(t)
 
 	// new goslim
-	g := New()
+	g := New("testfiles/config_test.yaml")
 
 	// set route
 	g.Router.Get("/", indexPage)

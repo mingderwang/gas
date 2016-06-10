@@ -27,7 +27,7 @@ func (c *config) loadConfig(configPath string) error {
 
 	yamlS, readErr := ioutil.ReadFile(configPath)
 	if readErr != nil {
-		println(readErr.Error())
+		//println(readErr.Error())
 
 		return readErr
 	}
