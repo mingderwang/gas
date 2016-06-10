@@ -58,7 +58,11 @@ import (
 
 ### New
 ```go
-g := goslim.New()
+g := goslim.New() // will load "config/default.yaml"
+```
+or
+```go
+g := goslim.New("config/path")
 ```
 
 ### Register Routes
@@ -164,6 +168,7 @@ The BuilderInterface at model/interface_builder.go
  - [ ] Redis
  - [ ] Memcache
 - [ ] i18n
+- [ ] HTTPS
 - [ ] Command line tools
 - [ ] Form handler (maybe next version)
 - [ ] Security check features(csrf, xss filter...etc)
