@@ -1,3 +1,75 @@
+// Goslim is a web framework.
+//
+// Example
+//
+// main.go
+//  import (
+//  	"Your_Project_Name/routers"
+// 	"github.com/gowebtw/goslim"
+// 	"github.com/gowebtw/goslim/middleware"
+//  )
+//
+//  // Create goslim object with config path
+//  // default is config/default.yaml
+//  g := goslim.New("config/path")
+//
+//  // register route
+//  routers.RegistRout(g.Router)
+//
+//  // run and listen
+//  g.Run()
+// routers.go
+//  import (
+//  	"Your_Project_Name/controllers"
+//  	"github.com/gowebtw/goslim"
+//  )
+//
+//  func RegistRout(r *goslim.Router)  {
+//
+//  	r.Get("/", controllers.IndexPage)
+//  	r.Post("/post/:param", controllers.PostTest)
+//
+//  	rc := &controllers.RestController{}
+//  	r.REST("/User", rc)
+//
+//  }
+// controllers.go
+//  package controllers
+//
+//  import (
+//  	"github.com/gowebtw/goslim"
+//  )
+//
+//  func IndexPage(ctx *goslim.Context) error {
+//  	return ctx.Render("", "views/layout.html", "views/index.html")
+//  }
+//
+//  func PostTest(ctx *goslim.Context) error {
+//  	a := map[string]string{
+//  		"Name": ctx.GetParam("param"),
+//  	}
+//
+//  	return ctx.Render(a, "views/layout2.html")
+//  }
+//
+// rest_controller.go
+//  import (
+//  	"github.com/gowebtw/goslim"
+//  )
+//
+//  type RestController struct {
+//  	goslim.ControllerInterface
+//  }
+//
+//  func (rc *RestController) Get(c *goslim.Context) error {
+//
+//  	return c.STRING(200, "Test Get")
+//  }
+//
+//  func (rc *RestController) Post(c *goslim.Context) error {
+//
+//  	return c.STRING(200, "Test Post")
+//  }
 package goslim
 
 import (
@@ -155,21 +227,20 @@ func defaultPanicHandler(c *Context, rcv interface{}) error {
 	return c.STRING(500, output)
 }
 
+// Load config from file
 func (g *Goslim) LoadConfig(configPath string) {
 	g.Config.loadConfig(configPath)
 }
 
 // Run framework
 func (g *Goslim) Run() {
-	// controller.Hi()
-	// print("go slim go go go")
-
 	fmt.Println("Server is Listen on: " + g.Config.ListenAddr + ":" + g.Config.ListenPort)
 	if err := http.ListenAndServe(g.Config.ListenAddr+":"+g.Config.ListenPort, g.Router); err != nil {
 		panic(err)
 	}
 }
 
+// New database connection according to config settings
 func (g *Goslim) NewDb() model.SlimDbInterface {
 	c := g.Config
 
@@ -197,6 +268,7 @@ func (g *Goslim) NewDb() model.SlimDbInterface {
 	// return m
 }
 
+// New model according to config settings
 func (g *Goslim) NewModel() model.ModelInterface {
 	// get db
 	// db := g.NewDb()

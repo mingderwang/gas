@@ -24,6 +24,7 @@ type Context struct {
 	mobj    model.ModelInterface
 }
 
+// create context
 func createContext(w *ResponseWriter, r *http.Request, g *Goslim) *Context {
 	c := &Context{}
 	c.RespWriter = w
@@ -33,6 +34,7 @@ func createContext(w *ResponseWriter, r *http.Request, g *Goslim) *Context {
 	return c
 }
 
+// reset context when get it from buffer
 func (ctx *Context) reset(w http.ResponseWriter, r *http.Request, g *Goslim) {
 	ctx.Req = r
 	ctx.RespWriter.reset(w)
@@ -47,6 +49,7 @@ func (ctx *Context) reset(w http.ResponseWriter, r *http.Request, g *Goslim) {
 //     ctx.handlerFunc(ctx)
 // }
 
+// Get parameter from post or get value
 func (ctx *Context) GetParam(name string) string {
 	if ctx.Req.PostForm == nil || ctx.Req.Form == nil {
 		ctx.Req.ParseForm()
@@ -95,7 +98,7 @@ func (ctx *Context) Render(data interface{}, tplPath ...string) error {
 	// return nil
 }
 
-// HTML sends an HTTP response with status code.
+// Set the response data-type to html
 func (ctx *Context) HTML(code int, html string) error {
 
 	ctx.RespWriter.Header().Set(ContentType, TextHTMLCharsetUTF8)
@@ -105,6 +108,7 @@ func (ctx *Context) HTML(code int, html string) error {
 	return err
 }
 
+// Set the response data-type to plain text
 func (ctx *Context) STRING(status int, data string) error {
 
 	ctx.RespWriter.Header().Set(ContentType, TextPlainCharsetUTF8)
@@ -114,7 +118,7 @@ func (ctx *Context) STRING(status int, data string) error {
 	return err
 }
 
-// JSON function combined data and template to show
+// Set response data-type to json and try to json encode
 func (ctx *Context) JSON(status int, data interface{}) error {
 
 	ctx.RespWriter.Header().Set(ContentType, ApplicationJSONCharsetUTF8)
@@ -131,7 +135,7 @@ func (ctx *Context) JSON(status int, data interface{}) error {
 	return errr
 }
 
-// DB funcs
+// Get model using context in controller
 func (ctx *Context) GetModel() model.ModelInterface {
 	m := ctx.Goslim.NewModel()
 
@@ -145,6 +149,7 @@ func (ctx *Context) GetModel() model.ModelInterface {
 	return nil
 }
 
+// Close db connection
 func (ctx *Context) CloseDB() error {
 	return ctx.mobj.GetDB().Close()
 }
