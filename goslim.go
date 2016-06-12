@@ -2,11 +2,25 @@
 //
 // Example
 //
+// Your project file structure
+//  |-- $GOPATH
+//  |   |-- src
+//  |       |--Your_Project_Name
+//  |          |-- config
+//  |              |-- default.yaml
+//  |          |-- controllers
+//  |              |-- default.go
+//  |          |-- log
+//  |          |-- models
+//  |          |-- routers
+//  |              |-- routers.go
+//  |          |-- static
+//  |          |-- views
+//  |          |-- main.go
 // main.go
 //  import (
 //  	"Your_Project_Name/routers"
 // 	"github.com/gowebtw/goslim"
-// 	"github.com/gowebtw/goslim/middleware"
 //  )
 //
 //  // Create goslim object with config path
