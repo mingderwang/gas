@@ -1,7 +1,7 @@
 package MySQLModel
 
 import (
-	"github.com/gowebtw/SQLBuilder/MySQL"
+	"github.com/gowebtw/SQLBuilder/MySQLBuilder"
 	"github.com/gowebtw/goslim/model"
 	"github.com/gowebtw/Config"
 )
@@ -9,11 +9,11 @@ import (
 type MySQLModel struct {
 	model.Model // extend Model
 
-	b  *MySQL.MySQLBuilder
+	b  *MySQLBuilder.MySQLBuilder
 }
 
 func New(cfg *Config.Config) model.ModelInterface{
-	b := MySQL.New(cfg)
+	b := MySQLBuilder.New(cfg)
 	m := &MySQLModel{}
 	m.SetBuilder(b)
 
