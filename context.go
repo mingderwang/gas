@@ -151,5 +151,5 @@ func (ctx *Context) GetModel() model.ModelInterface {
 
 // Close db connection
 func (ctx *Context) CloseDB() error {
-	return ctx.mobj.GetDB().Close()
+	return ctx.mobj.Builder().GetDB().Close()
 }

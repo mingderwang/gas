@@ -1,18 +1,23 @@
-package model
+package MySQLModel
 
 import (
-// "database/sql"
-// _ "github.com/go-sql-driver/mysql"
-
-// "fmt"
-// "errors"
+	"github.com/gowebtw/SQLBuilder/MySQL"
+	"github.com/gowebtw/goslim/model"
+	"github.com/gowebtw/Config"
 )
 
 type MySQLModel struct {
-	Model // extend Model
+	model.Model // extend Model
 
-	db *MysqlDb
-	b  *MySQLBuilder
+	b  *MySQL.MySQLBuilder
+}
+
+func New(cfg *Config.Config) model.ModelInterface{
+	b := MySQL.New(cfg)
+	m := &MySQLModel{}
+	m.SetBuilder(b)
+
+	return m
 }
 
 func (m *MySQLModel) Insert(s interface{}) (int64, error) {
@@ -46,15 +51,15 @@ func (m *MySQLModel) MultiInsert(s ...interface{}) ([]int64, error) {
 }
 
 func (m *MySQLModel) TransactionStart() error {
-	return m.GetDB().Begin()
+	return m.Builder().GetDB().Begin()
 }
 
 func (m *MySQLModel) TransactionRollback() error {
-	return m.GetDB().Rollback()
+	return m.Builder().GetDB().Rollback()
 }
 
 func (m *MySQLModel) TransactionCommit() error {
-	return m.GetDB().Commit()
+	return m.Builder().GetDB().Commit()
 }
 
 // func (m *MySQLModel) TestConn()  {

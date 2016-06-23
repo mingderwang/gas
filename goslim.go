@@ -93,6 +93,8 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"github.com/gowebtw/Config"
+	"github.com/gowebtw/goslim/model/MySQL"
 )
 
 const (
@@ -142,7 +144,7 @@ const (
 type (
 	Goslim struct {
 		Router *Router
-		Config *config
+		Config *Config.Config
 		Model  *goslimModel
 		pool   sync.Pool
 		Logger *logger.Logger
@@ -174,22 +176,30 @@ func New(configPath ...string) *Goslim {
 	}
 
 	// load config
-	g.Config = &config{
-		Mode:       "DEV",
-		ListenAddr: "localhost",
-		ListenPort: "8080",
-		PubDir:     "public",
-	}
+	g.Config = Config.New(map[interface{}]interface{} {
+		"Mode":       "DEV",
+		"ListenAddr": "localhost",
+		"ListenPort": "8080",
+		"PubDir":     "public",
+		"Db":	map[interface{}]interface{} {
+			"SqlDriver": "MySQL",
+			"Username": "root",
+			"Password": "",
+			"Charset": "utf8",
+		},
+	})
 	if len(configPath) == 0 {
 		configPath = []string {"config/default.yaml"}
 	}
 
-	// Only load first config (maybe load multi config next version)
-	err := g.Config.loadConfig(configPath[0])
-	if err != nil {
-		panic(err.Error())
+	//// Only load first config (maybe load multi config next version)
+	//err := g.Config.loadConfig(configPath[0])
+	//if err != nil {
+	//	panic(err.Error())
+	//}
+	for _, path := range configPath {
+		g.Config.Load(path)
 	}
-
 
 	// set router
 	g.Router = &Router{g: g}
@@ -201,7 +211,7 @@ func New(configPath ...string) *Goslim {
 	g.Router.SetPanicHandler(defaultPanicHandler)
 
 	// set static file path
-	g.Router.StaticPath(g.Config.PubDir)
+	g.Router.StaticPath(g.Config.GetString("PubDir"))
 	// fileServer := http.FileServer(http.Dir(g.Config.PubDir))
 	// g.Router.Get("/"+ g.Config.PubDir +"/*filepath", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	//     w.Header().Set("Vary", "Accept-Encoding")
@@ -232,7 +242,7 @@ func defaultPanicHandler(c *Context, rcv interface{}) error {
 	c.Goslim.Logger.Error(logStr)
 
 	var output string
-	if c.Goslim.Config.Mode == "DEV" {
+	if c.Goslim.Config.Get("Mode") == "DEV" {
 		output = logStr
 	} else {
 		output = "Sorry...some error occurred..."
@@ -243,44 +253,44 @@ func defaultPanicHandler(c *Context, rcv interface{}) error {
 
 // Load config from file
 func (g *Goslim) LoadConfig(configPath string) {
-	g.Config.loadConfig(configPath)
+	g.Config.Load(configPath)
 }
 
 // Run framework
 func (g *Goslim) Run() {
-	fmt.Println("Server is Listen on: " + g.Config.ListenAddr + ":" + g.Config.ListenPort)
-	if err := http.ListenAndServe(g.Config.ListenAddr+":"+g.Config.ListenPort, g.Router); err != nil {
+	fmt.Println("Server is Listen on: " + g.Config.GetString("ListenAddr") + ":" + g.Config.GetString("ListenPort"))
+	if err := http.ListenAndServe(g.Config.GetString("ListenAddr")+":"+g.Config.GetString("ListenPort"), g.Router); err != nil {
 		panic(err)
 	}
 }
 
 // New database connection according to config settings
-func (g *Goslim) NewDb() model.SlimDbInterface {
-	c := g.Config
-
-	var d model.SlimDbInterface
-
-	switch strings.ToLower(c.Db.SQLDriver) {
-	case "mysql":
-		d = new(model.MysqlDb)
-	default:
-		panic("Unknow Database Driver: " + g.Config.Db.SQLDriver)
-
-	}
-
-	d.ConnectWithConfig(g.Config.Db)
-
-	return d
-
-	// err := m.Connect(c.Db.Protocal, c.Db.Hostname, c.Db.Port, c.Db.Username, c.Db.Password, c.Db.Dbname, "charset=" + c.Db.Charset)
-	// if err != nil {
-	//     panic("Connection error: " + err.Error())
-	// }
-
-	// m.TestConn()
-
-	// return m
-}
+//func (g *Goslim) NewDb() model.SlimDbInterface {
+//	c := g.Config
+//
+//	var d model.SlimDbInterface
+//
+//	switch strings.ToLower(c.Db.SQLDriver) {
+//	case "mysql":
+//		d = new(model.MysqlDb)
+//	default:
+//		panic("Unknow Database Driver: " + g.Config.Db.SQLDriver)
+//
+//	}
+//
+//	d.ConnectWithConfig(g.Config.Db)
+//
+//	return d
+//
+//	// err := m.Connect(c.Db.Protocal, c.Db.Hostname, c.Db.Port, c.Db.Username, c.Db.Password, c.Db.Dbname, "charset=" + c.Db.Charset)
+//	// if err != nil {
+//	//     panic("Connection error: " + err.Error())
+//	// }
+//
+//	// m.TestConn()
+//
+//	// return m
+//}
 
 // New model according to config settings
 func (g *Goslim) NewModel() model.ModelInterface {
@@ -288,27 +298,29 @@ func (g *Goslim) NewModel() model.ModelInterface {
 	// db := g.NewDb()
 	c := g.Config
 
-	var db model.SlimDbInterface
+	//var db model.SlimDbInterface
 	var m model.ModelInterface
-	var builder model.BuilderInterface
+	//var builder model.BuilderInterface
 
-	switch strings.ToLower(c.Db.SQLDriver) {
+	switch strings.ToLower(c.GetString("Db.SqlDriver")) {
 	case "mysql":
-		db = new(model.MysqlDb)
-		m = new(model.MySQLModel)
-		builder = new(model.MySQLBuilder)
+		//db = new(model.MysqlDb)
+		//m = new(model.MySQLModel)
+		//builder = new(model.MySQLBuilder)
+		//m = model.New(c)
+		m = MySQLModel.New(c)
 	default:
-		panic("Unknow Database Driver: " + g.Config.Db.SQLDriver)
+		panic("Unknow Database Driver: " + c.GetString("Db.SqlDriver"))
 
 	}
 
-	err := db.ConnectWithConfig(g.Config.Db)
-	if err != nil {
-		panic(err.Error())
-	}
-	m.SetDB(db)
-	builder.SetDB(db)
-	m.SetBuilder(builder)
+	//err := db.ConnectWithConfig(g.Config.Db)
+	//if err != nil {
+	//	panic(err.Error())
+	//}
+	//m.SetDB(db)
+	//builder.SetDB(db)
+	//m.SetBuilder(builder)
 
 	return m
 }
