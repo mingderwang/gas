@@ -1,7 +1,7 @@
 Mode: TEST
 Listenaddr: localhost
 Listenport: 8080
-Pubdir: static
+PubDir: testfiles
 Db:
     SqlDriver: MySQL
     Protocol: tcp

@@ -10,6 +10,7 @@ import (
 
 var (
 	indexString = "indexpage"
+	testStaticString = "This is a static file"
 )
 
 func TestGoslim(t *testing.T) {
@@ -29,6 +30,24 @@ func TestGoslim(t *testing.T) {
 	assert.Equal(200, rec.Code)
 	assert.Equal(indexString, rec.Body.String())
 
+}
+
+func TestGoslim_Static(t *testing.T) {
+	assert := assert.New(t)
+
+	// new goslim
+	g := New("testfiles/config_test.yaml")
+
+	// set route
+	//g.Router.Get("/", indexPage)
+
+	// create request
+	req, _ := http.NewRequest("GET", "/testfiles/static.txt", nil)
+	rec := httptest.NewRecorder()
+	g.Router.ServeHTTP(rec, req)
+
+	assert.Equal(200, rec.Code)
+	assert.Equal(testStaticString, rec.Body.String())
 }
 
 func indexPage(ctx *Context) error {
