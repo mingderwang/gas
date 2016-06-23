@@ -14,6 +14,6 @@ before_install:
 
 script:
   - go test -v .
-  - go test -v ./model
+  - go test -v ./model/Mysql
   - go test -v ./validator
   

@@ -141,6 +141,19 @@ const (
 	XRealIP            = "X-Real-IP"
 )
 
+var defaultConfig = map[interface{}]interface{} {
+	"Mode":       "DEV",
+	"ListenAddr": "localhost",
+	"ListenPort": "8080",
+	"PubDir":     "public",
+	"Db":	map[interface{}]interface{} {
+		"SqlDriver": "MySQL",
+		"Username": "root",
+		"Password": "",
+		"Charset": "utf8",
+	},
+}
+
 type (
 	Goslim struct {
 		Router *Router
@@ -176,18 +189,7 @@ func New(configPath ...string) *Goslim {
 	}
 
 	// load config
-	g.Config = Config.New(map[interface{}]interface{} {
-		"Mode":       "DEV",
-		"ListenAddr": "localhost",
-		"ListenPort": "8080",
-		"PubDir":     "public",
-		"Db":	map[interface{}]interface{} {
-			"SqlDriver": "MySQL",
-			"Username": "root",
-			"Password": "",
-			"Charset": "utf8",
-		},
-	})
+	g.Config = Config.New(defaultConfig)
 	if len(configPath) == 0 {
 		configPath = []string {"config/default.yaml"}
 	}
