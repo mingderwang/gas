@@ -118,38 +118,6 @@ func LogMiddleware(next goslim.CHandler) goslim.CHandler {
 g.Run()
 ```
 
-### MySQL DB BuilderInterface works progress
-- [x] SetDB
-- [x] GetDB
-- [x] Select
- - [x] Distinct
- - [x] From
- - [x] Where
- - [x] AndWhere
- - [x] OrWhere
- - [x] GroupBy
- - [x] Having
- - [x] OrderBy
- - [x] Desc
- - [x] Asc
- - [x] Limit
- - [x] Get
- - [x] Count
- - [x] Insert
-- [ ] Join
- - [ ] Inner join
- - [ ] Outer join
- - [ ] Left join
- - [ ] Right join
-- [ ] Update
-- [ ] Delete
-- [x] Transaction
- - [x] begin
- - [x] commit
- - [x] rollback
-
-The BuilderInterface at model/interface_builder.go
-
 ### Roadmap
 - [ ] Models
  - [ ] Model fields mapping
