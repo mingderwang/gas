@@ -1,8 +1,8 @@
 [![Build Status](https://api.travis-ci.org/gowebtw/gas.svg?branch=master)](https://api.travis-ci.org/gowebtw/gas.svg)
 
-# gas
+# Gas
 
-<img src="https://raw.githubusercontent.com/gowebtw/gas/master/logo.jpg">
+<img src="https://raw.githubusercontent.com/gowebtw/gas/master/logo.jpg" alt="go-gas" width="200px" />
 
 Gas is a Web framework written in Go. And this is not a total complete project.
 
