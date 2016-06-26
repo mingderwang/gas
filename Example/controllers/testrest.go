@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/gowebtw/gas"
+	"github.com/go-gas/gas"
 )
 
 type RestController struct {

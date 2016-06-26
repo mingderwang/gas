@@ -3,7 +3,7 @@ package gas
 import (
 	"encoding/json"
 	"errors"
-	"github.com/gowebtw/gas/model"
+	"github.com/go-gas/gas/model"
 	"github.com/julienschmidt/httprouter"
 	"golang.org/x/net/context"
 	"html/template"

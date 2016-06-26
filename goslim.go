@@ -20,7 +20,7 @@
 // main.go
 //  import (
 //  	"Your_Project_Name/routers"
-// 	"github.com/gowebtw/gas"
+// 	"github.com/go-gas/gas"
 //  )
 //
 //  // Create gas object with config path
@@ -35,7 +35,7 @@
 // routers.go
 //  import (
 //  	"Your_Project_Name/controllers"
-//  	"github.com/gowebtw/gas"
+//  	"github.com/go-gas/gas"
 //  )
 //
 //  func RegistRout(r *gas.Router)  {
@@ -51,7 +51,7 @@
 //  package controllers
 //
 //  import (
-//  	"github.com/gowebtw/gas"
+//  	"github.com/go-gas/gas"
 //  )
 //
 //  func IndexPage(ctx *gas.Context) error {
@@ -68,7 +68,7 @@
 //
 // rest_controller.go
 //  import (
-//  	"github.com/gowebtw/gas"
+//  	"github.com/go-gas/gas"
 //  )
 //
 //  type RestController struct {
@@ -88,13 +88,13 @@ package gas
 
 import (
 	"fmt"
-	"github.com/gowebtw/gas/logger"
-	"github.com/gowebtw/gas/model"
+	"github.com/go-gas/gas/logger"
+	"github.com/go-gas/gas/model"
 	"net/http"
 	"strings"
 	"sync"
-	"github.com/gowebtw/Config"
-	"github.com/gowebtw/gas/model/MySQL"
+	"github.com/go-gas/Config"
+	"github.com/go-gas/gas/model/MySQL"
 )
 
 const (

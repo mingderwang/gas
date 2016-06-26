@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/gowebtw/gas"
-	"github.com/gowebtw/gas/Example/routers"
-	"github.com/gowebtw/gas/middleware"
+	"github.com/go-gas/gas"
+	"github.com/go-gas/gas/Example/routers"
+	"github.com/go-gas/gas/middleware"
 )
 
 func main() {

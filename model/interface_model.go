@@ -1,6 +1,6 @@
 package model
 
-import "github.com/gowebtw/SQLBuilder"
+import "github.com/go-gas/SQLBuilder"
 
 type ModelInterface interface {
 	// Connect (protocol, hostname, port, username, password, dbname, params string) error

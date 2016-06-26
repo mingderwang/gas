@@ -4,7 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"os"
-	"github.com/gowebtw/Config"
+	"github.com/go-gas/Config"
 )
 
 type testUser struct {

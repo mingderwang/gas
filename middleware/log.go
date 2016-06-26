@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/gowebtw/gas"
-	"github.com/gowebtw/gas/logger"
+	"github.com/go-gas/gas"
+	"github.com/go-gas/gas/logger"
 
 	"net"
 	"strconv"

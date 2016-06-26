@@ -1,9 +1,9 @@
 package MySQLModel
 
 import (
-	"github.com/gowebtw/SQLBuilder/MySQLBuilder"
-	"github.com/gowebtw/gas/model"
-	"github.com/gowebtw/Config"
+	"github.com/go-gas/SQLBuilder/MySQLBuilder"
+	"github.com/go-gas/gas/model"
+	"github.com/go-gas/Config"
 )
 
 type MySQLModel struct {

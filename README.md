@@ -1,8 +1,8 @@
-[![Build Status](https://api.travis-ci.org/gowebtw/gas.svg?branch=master)](https://api.travis-ci.org/gowebtw/gas.svg)
+[![Build Status](https://api.travis-ci.org/go-gas/gas.svg?branch=master)](https://api.travis-ci.org/go-gas/gas.svg)
 
 # Gas
 
-<img src="https://raw.githubusercontent.com/gowebtw/gas/master/logo.jpg" alt="go-gas" width="200px" />
+<img src="https://raw.githubusercontent.com/go-gas/gas/master/logo.jpg" alt="go-gas" width="200px" />
 
 Gas is a Web framework written in Go. And this is not a total complete project.
 
@@ -23,12 +23,12 @@ And Model is not complete yet. Just finished MySQL SELECT statement Builder
 
 # Install
 ```
-$ go get github.com/gowebtw/gas
+$ go get github.com/go-gas/gas
 ```
 
 # Run demo
 ```
-$ cd $GOPATH/src/github.com/gowebtw/gas/Example
+$ cd $GOPATH/src/github.com/go-gas/gas/Example
 $ go run main.go
 ```
 
@@ -54,8 +54,8 @@ $ go run main.go
 ```go
 import (
     "Your_Project_Name/routers"
-    "github.com/gowebtw/gas"
-    "github.com/gowebtw/gas/middleware"
+    "github.com/go-gas/gas"
+    "github.com/go-gas/gas/middleware"
 )
 ```
 
@@ -79,7 +79,7 @@ package routers
 
 import (
     "Your_Project_Name/controllers"
-    "github.com/gowebtw/gas"
+    "github.com/go-gas/gas"
 )
 
 func RegistRout(r *gas.Router)  {

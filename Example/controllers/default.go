@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"github.com/gowebtw/gas"
-	// "github.com/gowebtw/gas/model"
-	"github.com/gowebtw/gas/Example/models"
+	"github.com/go-gas/gas"
+	// "github.com/go-gas/gas/model"
+	"github.com/go-gas/gas/Example/models"
 	// "time"
 )
 

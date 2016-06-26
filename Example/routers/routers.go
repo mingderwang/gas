@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"github.com/gowebtw/gas"
-	"github.com/gowebtw/gas/Example/controllers"
+	"github.com/go-gas/gas"
+	"github.com/go-gas/gas/Example/controllers"
 )
 
 func RegistRout(r *gas.Router) {
