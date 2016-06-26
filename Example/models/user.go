@@ -1,7 +1,7 @@
 package models
 
 import (
-// "github.com/gowebtw/goslim/model"
+// "github.com/gowebtw/gas/model"
 )
 
 type TestUser struct {

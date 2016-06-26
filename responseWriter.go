@@ -1,4 +1,4 @@
-package goslim
+package gas
 
 import (
 	// "bufio"

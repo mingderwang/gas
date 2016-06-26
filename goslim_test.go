@@ -1,4 +1,4 @@
-package goslim
+package gas
 
 import (
 	"net/http"
@@ -13,10 +13,10 @@ var (
 	testStaticString = "This is a static file"
 )
 
-func TestGoslim(t *testing.T) {
+func Testgas(t *testing.T) {
 	assert := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	// set route
@@ -32,10 +32,10 @@ func TestGoslim(t *testing.T) {
 
 }
 
-func TestGoslim_Static(t *testing.T) {
+func Testgas_Static(t *testing.T) {
 	assert := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	// set route

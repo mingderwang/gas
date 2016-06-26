@@ -1,4 +1,4 @@
-package goslim
+package gas
 
 // ControllerInterface defind controller interface
 type ControllerInterface interface {

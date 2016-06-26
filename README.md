@@ -1,7 +1,10 @@
-[![Build Status](https://api.travis-ci.org/gowebtw/goslim.svg?branch=master)](https://api.travis-ci.org/gowebtw/goslim.svg)
+[![Build Status](https://api.travis-ci.org/gowebtw/gas.svg?branch=master)](https://api.travis-ci.org/gowebtw/gas.svg)
 
-# Goslim
-Goslim is a Web framework written in Go. And this is not a total complete project.
+# gas
+
+<img src="https://raw.githubusercontent.com/gowebtw/gas/master/logo.png">
+
+Gas is a Web framework written in Go. And this is not a total complete project.
 
 I just did a minimum workable architechture.
 
@@ -20,12 +23,12 @@ And Model is not complete yet. Just finished MySQL SELECT statement Builder
 
 # Install
 ```
-$ go get github.com/gowebtw/goslim
+$ go get github.com/gowebtw/gas
 ```
 
 # Run demo
 ```
-$ cd $GOPATH/src/github.com/gowebtw/goslim/Example
+$ cd $GOPATH/src/github.com/gowebtw/gas/Example
 $ go run main.go
 ```
 
@@ -51,18 +54,18 @@ $ go run main.go
 ```go
 import (
     "Your_Project_Name/routers"
-    "github.com/gowebtw/goslim"
-    "github.com/gowebtw/goslim/middleware"
+    "github.com/gowebtw/gas"
+    "github.com/gowebtw/gas/middleware"
 )
 ```
 
 ### New
 ```go
-g := goslim.New() // will load "config/default.yaml"
+g := gas.New() // will load "config/default.yaml"
 ```
 or
 ```go
-g := goslim.New("config/path")
+g := gas.New("config/path")
 ```
 
 ### Register Routes
@@ -76,10 +79,10 @@ package routers
 
 import (
     "Your_Project_Name/controllers"
-    "github.com/gowebtw/goslim"
+    "github.com/gowebtw/gas"
 )
 
-func RegistRout(r *goslim.Router)  {
+func RegistRout(r *gas.Router)  {
     
     r.Get("/", controllers.IndexPage)
     r.Post("/post/:param", controllers.PostTest)
@@ -98,8 +101,8 @@ g.Router.Use(middleware.LogMiddleware)
 And you can write your own middleware function
 
 ```go
-func LogMiddleware(next goslim.CHandler) goslim.CHandler {
-    return func (c *goslim.Context) error  {
+func LogMiddleware(next gas.CHandler) gas.CHandler {
+    return func (c *gas.Context) error  {
        
        // do something before next handler
        

@@ -1,4 +1,4 @@
-// This package has some of middleware that built-in goslim framework.
+// This package has some of middleware that built-in gas framework.
 // You can use
 //  g.Router.Use(middleware.LogMiddleware)
 // to add middleware.
@@ -7,8 +7,8 @@
 // Example
 //
 // You can write your middleware accord with
-//  func YourMiddleware(next goslim.CHandler) goslim.CHandler {
-//  	return func(c *goslim.Context) error {
+//  func YourMiddleware(next gas.CHandler) gas.CHandler {
+//  	return func(c *gas.Context) error {
 //  		// do something before next handler
 //
 //  		err := next(c)

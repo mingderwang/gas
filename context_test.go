@@ -1,4 +1,4 @@
-package goslim
+package gas
 
 import (
 	"encoding/json"
@@ -29,7 +29,7 @@ var (
 func TestRender(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	// set route
@@ -50,7 +50,7 @@ func TestRender(t *testing.T) {
 func TestHTML(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	// set route
@@ -71,7 +71,7 @@ func TestHTML(t *testing.T) {
 func TestSTRINGResponse(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	// set route
@@ -92,7 +92,7 @@ func TestSTRINGResponse(t *testing.T) {
 func TestJSONResponse(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	// set route

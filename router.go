@@ -1,4 +1,4 @@
-package goslim
+package gas
 
 import (
 	"github.com/julienschmidt/httprouter"
@@ -11,10 +11,10 @@ var supportRestProto = [7]string{"GET", "POST", "DELETE", "HEAD", "OPTIONS", "PU
 
 type (
 
-	// Router class include httprouter and goslim
+	// Router class include httprouter and gas
 	Router struct {
 		hr          httprouter.Router
-		g           *Goslim
+		g           *gas
 		middlewares []MiddlewareFunc
 	}
 

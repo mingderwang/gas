@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/gowebtw/goslim"
-	"github.com/gowebtw/goslim/Example/routers"
-	"github.com/gowebtw/goslim/middleware"
+	"github.com/gowebtw/gas"
+	"github.com/gowebtw/gas/Example/routers"
+	"github.com/gowebtw/gas/middleware"
 )
 
 func main() {
-	g := goslim.New()
+	g := gas.New()
 
 	routers.RegistRout(g.Router)
 

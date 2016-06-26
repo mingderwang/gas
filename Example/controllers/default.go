@@ -1,23 +1,23 @@
 package controllers
 
 import (
-	"github.com/gowebtw/goslim"
-	// "github.com/gowebtw/goslim/model"
-	"github.com/gowebtw/goslim/Example/models"
+	"github.com/gowebtw/gas"
+	// "github.com/gowebtw/gas/model"
+	"github.com/gowebtw/gas/Example/models"
 	// "time"
 )
 
-func IndexPage(ctx *goslim.Context) error {
+func IndexPage(ctx *gas.Context) error {
 	return ctx.Render("", "views/layout.html", "views/index.html")
 }
 
-func DefaultHi(ctx *goslim.Context) error {
+func DefaultHi(ctx *gas.Context) error {
 	a := map[string]string{
 		"Name": ctx.GetParam("name"),
 	}
 	return ctx.Render(a, "views/layout2.html")
 
-	// ctx.Goslim.Logger.Danger( time.Now().String() + " - YO~~" + ctx.GetParam("name") + "\n\n\n\n\n\n" )
+	// ctx.gas.Logger.Danger( time.Now().String() + " - YO~~" + ctx.GetParam("name") + "\n\n\n\n\n\n" )
 
 	// ctx.JSON(200, ctx.GetParam("name"))
 
@@ -26,7 +26,7 @@ func DefaultHi(ctx *goslim.Context) error {
 	// return nil
 }
 
-func TestModel(ctx *goslim.Context) error {
+func TestModel(ctx *gas.Context) error {
 	m := ctx.GetModel()
 
 	// u := &models.User{}
@@ -45,7 +45,7 @@ func TestModel(ctx *goslim.Context) error {
 	return ctx.STRING(200, "You can see testuser table schema and data print on console. If not please turn on your mysql server and modify the config file.")
 }
 
-func PostTest(ctx *goslim.Context) error {
+func PostTest(ctx *gas.Context) error {
 	// println("default hi")
 
 	println(ctx.GetParam("Test"))

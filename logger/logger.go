@@ -37,7 +37,7 @@ func New(log_path string) *Logger {
 	if log_path != "" {
 		l.logPath = log_path
 	} else {
-		l.logPath = "/tmp/goslim.log"
+		l.logPath = "/tmp/gas.log"
 	}
 
 	return l

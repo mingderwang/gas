@@ -2,7 +2,7 @@ package MySQLModel
 
 import (
 	"github.com/gowebtw/SQLBuilder/MySQLBuilder"
-	"github.com/gowebtw/goslim/model"
+	"github.com/gowebtw/gas/model"
 	"github.com/gowebtw/Config"
 )
 

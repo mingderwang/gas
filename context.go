@@ -1,9 +1,9 @@
-package goslim
+package gas
 
 import (
 	"encoding/json"
 	"errors"
-	"github.com/gowebtw/goslim/model"
+	"github.com/gowebtw/gas/model"
 	"github.com/julienschmidt/httprouter"
 	"golang.org/x/net/context"
 	"html/template"
@@ -17,7 +17,7 @@ type Context struct {
 	ps         *httprouter.Params
 	// handlerFunc CHandler
 
-	Goslim *Goslim //
+	gas *gas //
 
 	// DB
 	isUseDB bool
@@ -25,21 +25,21 @@ type Context struct {
 }
 
 // create context
-func createContext(w *ResponseWriter, r *http.Request, g *Goslim) *Context {
+func createContext(w *ResponseWriter, r *http.Request, g *gas) *Context {
 	c := &Context{}
 	c.RespWriter = w
 	c.Req = r
-	c.Goslim = g
+	c.gas = g
 
 	return c
 }
 
 // reset context when get it from buffer
-func (ctx *Context) reset(w http.ResponseWriter, r *http.Request, g *Goslim) {
+func (ctx *Context) reset(w http.ResponseWriter, r *http.Request, g *gas) {
 	ctx.Req = r
 	ctx.RespWriter.reset(w)
 
-	ctx.Goslim = g
+	ctx.gas = g
 
 	ctx.mobj = nil
 	ctx.isUseDB = false
@@ -79,7 +79,7 @@ func (ctx *Context) Render(data interface{}, tplPath ...string) error {
 	ctx.RespWriter.Header().Set(ContentType, TextHTMLCharsetUTF8)
 
 	// tpls := strings.Join(tplPath, ", ")
-	tmpl := template.New("goslim")
+	tmpl := template.New("gas")
 
 	for _, tpath := range tplPath {
 		tmpl = template.Must((tmpl.ParseFiles(tpath)))
@@ -137,7 +137,7 @@ func (ctx *Context) JSON(status int, data interface{}) error {
 
 // Get model using context in controller
 func (ctx *Context) GetModel() model.ModelInterface {
-	m := ctx.Goslim.NewModel()
+	m := ctx.gas.NewModel()
 
 	if m != nil {
 		ctx.isUseDB = true

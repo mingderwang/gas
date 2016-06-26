@@ -1,14 +1,14 @@
 package controllers
 
 import (
-	"github.com/gowebtw/goslim"
+	"github.com/gowebtw/gas"
 )
 
 type RestController struct {
-	goslim.ControllerInterface
+	gas.ControllerInterface
 }
 
-func (rc *RestController) Get(c *goslim.Context) error {
+func (rc *RestController) Get(c *gas.Context) error {
 
 	return c.STRING(200, "Test Get")
 }

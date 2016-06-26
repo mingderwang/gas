@@ -38,7 +38,7 @@ var (
 		"Age":      10,
 	}
 
-	// testG *goslim.Goslim
+	// testG *gas.gas
 
 	// for travis-ci default mysql username and password
 	testConfig = map[string]string{
@@ -57,7 +57,7 @@ var (
 
 func TestMain(m *testing.M) {
 
-	// testG = goslim.New()
+	// testG = gas.New()
 	// testG.LoadConfig("../testfiles/config_test.yaml")
 
 	//var md ModelInterface
@@ -231,7 +231,7 @@ func TestMySQLBuilder_Select(t *testing.T) {
 
 	as := assert.New(t)
 	as.Nil(err)
-	as.Equal("Herb", tt[0]["name"])
+	as.Equal(testUserData["Name"], tt[0]["name"])
 	as.Equal("1", tt[0]["id"])
 	as.Equal(asql, testM.Builder().GetLastSQL())
 }

@@ -1,24 +1,24 @@
 package middleware
 
 import (
-	"github.com/gowebtw/goslim"
-	"github.com/gowebtw/goslim/logger"
+	"github.com/gowebtw/gas"
+	"github.com/gowebtw/gas/logger"
 
 	"net"
 	"strconv"
 	"time"
 )
 
-func LogMiddleware(next goslim.CHandler) goslim.CHandler {
-	return func(c *goslim.Context) error {
+func LogMiddleware(next gas.CHandler) gas.CHandler {
+	return func(c *gas.Context) error {
 		// req := c.Request()
 		// res := c.Response()
 		l := logger.New("log/logs.txt")
 
 		remoteAddr := c.Req.RemoteAddr
-		if ip := c.Req.Header.Get(goslim.XRealIP); ip != "" {
+		if ip := c.Req.Header.Get(gas.XRealIP); ip != "" {
 			remoteAddr = ip
-		} else if ip = c.Req.Header.Get(goslim.XForwardedFor); ip != "" {
+		} else if ip = c.Req.Header.Get(gas.XForwardedFor); ip != "" {
 			remoteAddr = ip
 		} else {
 			remoteAddr, _, _ = net.SplitHostPort(remoteAddr)

@@ -1,11 +1,11 @@
 package routers
 
 import (
-	"github.com/gowebtw/goslim"
-	"github.com/gowebtw/goslim/Example/controllers"
+	"github.com/gowebtw/gas"
+	"github.com/gowebtw/gas/Example/controllers"
 )
 
-func RegistRout(r *goslim.Router) {
+func RegistRout(r *gas.Router) {
 
 	// dc := &controllers.DefaultController{}
 	r.Get("/", controllers.IndexPage)

@@ -28,19 +28,9 @@ CREATE TABLE `testuser` (
   `password` varchar(200) DEFAULT NULL,
   `age` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `testuser`
---
-
-LOCK TABLES `testuser` WRITE;
-/*!40000 ALTER TABLE `testuser` DISABLE KEYS */;
-INSERT INTO `testuser` VALUES (1,'Herb','123456',10),(2,'John','123456',11),(3,'John2','1234567',10),(4,'Herb2','123456',10),(5,'John','123456',18);
-/*!40000 ALTER TABLE `testuser` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

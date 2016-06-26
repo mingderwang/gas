@@ -1,4 +1,4 @@
-// Goslim is a web framework.
+// gas is a web framework.
 //
 // Example
 //
@@ -20,12 +20,12 @@
 // main.go
 //  import (
 //  	"Your_Project_Name/routers"
-// 	"github.com/gowebtw/goslim"
+// 	"github.com/gowebtw/gas"
 //  )
 //
-//  // Create goslim object with config path
+//  // Create gas object with config path
 //  // default is config/default.yaml
-//  g := goslim.New("config/path")
+//  g := gas.New("config/path")
 //
 //  // register route
 //  routers.RegistRout(g.Router)
@@ -35,10 +35,10 @@
 // routers.go
 //  import (
 //  	"Your_Project_Name/controllers"
-//  	"github.com/gowebtw/goslim"
+//  	"github.com/gowebtw/gas"
 //  )
 //
-//  func RegistRout(r *goslim.Router)  {
+//  func RegistRout(r *gas.Router)  {
 //
 //  	r.Get("/", controllers.IndexPage)
 //  	r.Post("/post/:param", controllers.PostTest)
@@ -51,14 +51,14 @@
 //  package controllers
 //
 //  import (
-//  	"github.com/gowebtw/goslim"
+//  	"github.com/gowebtw/gas"
 //  )
 //
-//  func IndexPage(ctx *goslim.Context) error {
+//  func IndexPage(ctx *gas.Context) error {
 //  	return ctx.Render("", "views/layout.html", "views/index.html")
 //  }
 //
-//  func PostTest(ctx *goslim.Context) error {
+//  func PostTest(ctx *gas.Context) error {
 //  	a := map[string]string{
 //  		"Name": ctx.GetParam("param"),
 //  	}
@@ -68,33 +68,33 @@
 //
 // rest_controller.go
 //  import (
-//  	"github.com/gowebtw/goslim"
+//  	"github.com/gowebtw/gas"
 //  )
 //
 //  type RestController struct {
-//  	goslim.ControllerInterface
+//  	gas.ControllerInterface
 //  }
 //
-//  func (rc *RestController) Get(c *goslim.Context) error {
+//  func (rc *RestController) Get(c *gas.Context) error {
 //
 //  	return c.STRING(200, "Test Get")
 //  }
 //
-//  func (rc *RestController) Post(c *goslim.Context) error {
+//  func (rc *RestController) Post(c *gas.Context) error {
 //
 //  	return c.STRING(200, "Test Post")
 //  }
-package goslim
+package gas
 
 import (
 	"fmt"
-	"github.com/gowebtw/goslim/logger"
-	"github.com/gowebtw/goslim/model"
+	"github.com/gowebtw/gas/logger"
+	"github.com/gowebtw/gas/model"
 	"net/http"
 	"strings"
 	"sync"
 	"github.com/gowebtw/Config"
-	"github.com/gowebtw/goslim/model/MySQL"
+	"github.com/gowebtw/gas/model/MySQL"
 )
 
 const (
@@ -155,26 +155,26 @@ var defaultConfig = map[interface{}]interface{} {
 }
 
 type (
-	Goslim struct {
+	gas struct {
 		Router *Router
 		Config *Config.Config
-		Model  *goslimModel
+		Model  *gasModel
 		pool   sync.Pool
 		Logger *logger.Logger
 	}
 
-	goslimModel struct {
+	gasModel struct {
 		model.Model
 	}
 )
 
-// New goslim Object
+// New gas Object
 //
 // Ex:
 //  g := New()
 //  g.Run()
-func New(configPath ...string) *Goslim {
-	g := &Goslim{}
+func New(configPath ...string) *gas {
+	g := &gas{}
 
 	// init logger
 	g.Logger = logger.New("log/system.log")
@@ -223,7 +223,7 @@ func New(configPath ...string) *Goslim {
 	// })
 
 	// init model
-	// g.Model = &goslimModel{}
+	// g.Model = &gasModel{}
 
 	// if Config.Db.SQLDriver != "" && Config.Db.Username != "" && Config.Db.Dbname != "" {
 	//     Model.Conn(Config.Db.Username, Config.Db.Password, Config.Db.Dbname)
@@ -241,10 +241,10 @@ func defaultNotFoundHandler(c *Context) error {
 
 func defaultPanicHandler(c *Context, rcv interface{}) error {
 	logStr := fmt.Sprintf("Panic occurred...rcv: %v", rcv)
-	c.Goslim.Logger.Error(logStr)
+	c.gas.Logger.Error(logStr)
 
 	var output string
-	if c.Goslim.Config.Get("Mode") == "DEV" {
+	if c.gas.Config.Get("Mode") == "DEV" {
 		output = logStr
 	} else {
 		output = "Sorry...some error occurred..."
@@ -254,12 +254,12 @@ func defaultPanicHandler(c *Context, rcv interface{}) error {
 }
 
 // Load config from file
-func (g *Goslim) LoadConfig(configPath string) {
+func (g *gas) LoadConfig(configPath string) {
 	g.Config.Load(configPath)
 }
 
 // Run framework
-func (g *Goslim) Run() {
+func (g *gas) Run() {
 	fmt.Println("Server is Listen on: " + g.Config.GetString("ListenAddr") + ":" + g.Config.GetString("ListenPort"))
 	if err := http.ListenAndServe(g.Config.GetString("ListenAddr")+":"+g.Config.GetString("ListenPort"), g.Router); err != nil {
 		panic(err)
@@ -267,7 +267,7 @@ func (g *Goslim) Run() {
 }
 
 // New database connection according to config settings
-//func (g *Goslim) NewDb() model.SlimDbInterface {
+//func (g *gas) NewDb() model.SlimDbInterface {
 //	c := g.Config
 //
 //	var d model.SlimDbInterface
@@ -295,7 +295,7 @@ func (g *Goslim) Run() {
 //}
 
 // New model according to config settings
-func (g *Goslim) NewModel() model.ModelInterface {
+func (g *gas) NewModel() model.ModelInterface {
 	// get db
 	// db := g.NewDb()
 	c := g.Config

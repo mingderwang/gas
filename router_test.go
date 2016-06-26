@@ -1,4 +1,4 @@
-package goslim
+package gas
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -10,7 +10,7 @@ import (
 func TestRouter_Get(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	g.Router.Get("/test", func(c *Context) error {
@@ -27,7 +27,7 @@ func TestRouter_Get(t *testing.T) {
 func TestRouter_Post(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	g.Router.Post("/test", func(c *Context) error {
@@ -46,7 +46,7 @@ func TestRouter_Post(t *testing.T) {
 func TestRouter_Put(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	g.Router.Put("/test", func(c *Context) error {
@@ -65,7 +65,7 @@ func TestRouter_Put(t *testing.T) {
 func TestRouter_Patch(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	g.Router.Patch("/", func(c *Context) error {
@@ -84,7 +84,7 @@ func TestRouter_Patch(t *testing.T) {
 func TestRouter_Delete(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	g.Router.Delete("/", func(c *Context) error {
@@ -100,7 +100,7 @@ func TestRouter_Delete(t *testing.T) {
 func TestRouter_Options(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	g.Router.Options("/", func(c *Context) error {
@@ -116,7 +116,7 @@ func TestRouter_Options(t *testing.T) {
 func TestRouter_Head(t *testing.T) {
 	as := assert.New(t)
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	g.Router.Head("/", func(c *Context) error {
@@ -145,7 +145,7 @@ func TestRouter_REST(t *testing.T) {
 
 	var c = &testController{}
 
-	// new goslim
+	// new gas
 	g := New("testfiles/config_test.yaml")
 
 	g.Router.REST("/User", c)
