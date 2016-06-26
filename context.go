@@ -4,17 +4,22 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/go-gas/gas/model"
-	"github.com/julienschmidt/httprouter"
+	//"github.com/julienschmidt/httprouter"
 	"golang.org/x/net/context"
 	"html/template"
-	"net/http"
+	//"net/http"
+
+	"github.com/valyala/fasthttp"
+	"github.com/buaazp/fasthttprouter"
 )
 
 type Context struct {
 	context.Context
 	RespWriter *ResponseWriter
-	Req        *http.Request
-	ps         *httprouter.Params
+	Req        *fasthttp.Request
+	ps         *fasthttprouter.Params
+
+
 	// handlerFunc CHandler
 
 	gas *gas //
@@ -25,7 +30,8 @@ type Context struct {
 }
 
 // create context
-func createContext(w *ResponseWriter, r *http.Request, g *gas) *Context {
+//func createContext(w *ResponseWriter, r *http.Request, g *gas) *Context {
+func createContext(w *ResponseWriter, r *fasthttp.Request, g *gas) *Context {
 	c := &Context{}
 	c.RespWriter = w
 	c.Req = r
@@ -35,8 +41,12 @@ func createContext(w *ResponseWriter, r *http.Request, g *gas) *Context {
 }
 
 // reset context when get it from buffer
-func (ctx *Context) reset(w http.ResponseWriter, r *http.Request, g *gas) {
-	ctx.Req = r
+//func (ctx *Context) reset(w http.ResponseWriter, r *http.Request, g *gas) {
+//	ctx.Req = r
+//func (ctx *Context) reset(w http.ResponseWriter, r *http.Request, g *Goslim) {
+func (ctx *Context) reset(fctx *fasthttp.RequestCtx, g *gas) {
+
+	ctx.Req = fctx.Request
 	ctx.RespWriter.reset(w)
 
 	ctx.gas = g

@@ -5,15 +5,16 @@ import (
 	// "fmt"
 	// "net"
 	"net/http"
+	"github.com/valyala/fasthttp"
 )
 
 type ResponseWriter struct {
-	Writer http.ResponseWriter
+	Writer fasthttp.Response
 	status int
 	size   int
 }
 
-func (rw *ResponseWriter) reset(w http.ResponseWriter) {
+func (rw *ResponseWriter) reset(w fasthttp.Response) {
 	rw.Writer = w
 	rw.size = 0
 	rw.status = http.StatusOK
@@ -25,15 +26,15 @@ func (rw *ResponseWriter) Header() http.Header {
 
 func (rw *ResponseWriter) WriteHeader(s int) {
 	rw.status = s
-	rw.Writer.WriteHeader(s)
+	rw.Writer.Header().SetStatusCode(s)
 }
 
 func (rw *ResponseWriter) Write(b []byte) (int, error) {
 	if !rw.Written() {
 		rw.WriteHeader(http.StatusOK)
 	}
-	size, err := rw.Writer.Write(b)
-	rw.size += size
+	err := rw.Writer.Write(b)
+	rw.size += rw.Writer
 	return size, err
 }
 
@@ -49,13 +50,13 @@ func (rw *ResponseWriter) Written() bool {
 	return rw.status != 0
 }
 
-func (rw *ResponseWriter) CloseNotify() <-chan bool {
-	return rw.Writer.(http.CloseNotifier).CloseNotify()
-}
-
-func (rw *ResponseWriter) Flush() {
-	flusher, ok := rw.Writer.(http.Flusher)
-	if ok {
-		flusher.Flush()
-	}
-}
+//func (rw *ResponseWriter) CloseNotify() <-chan bool {
+//	return rw.Writer.(http.CloseNotifier).CloseNotify()
+//}
+//
+//func (rw *ResponseWriter) Flush() {
+//	flusher, ok := rw.Writer.(http.Flusher)
+//	if ok {
+//		flusher.Flush()
+//	}
+//}

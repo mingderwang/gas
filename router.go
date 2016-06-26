@@ -1,10 +1,13 @@
 package gas
 
 import (
-	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"reflect"
 	"strings"
+	"github.com/buaazp/fasthttprouter"
+	"github.com/valyala/fasthttp"
+	//"github.com/julienschmidt/httprouter"
+	"github.com/julienschmidt/httprouter"
 )
 
 var supportRestProto = [7]string{"GET", "POST", "DELETE", "HEAD", "OPTIONS", "PUT", "PATCH"}
@@ -13,8 +16,8 @@ type (
 
 	// Router class include httprouter and gas
 	Router struct {
-		hr          httprouter.Router
 		g           *gas
+		hr          fasthttprouter.Router
 		middlewares []MiddlewareFunc
 	}
 
@@ -104,7 +107,8 @@ func wrapHandlerFuncToMiddlewareFunc(m CHandler) MiddlewareFunc {
 }
 
 func (r *Router) setRoute(method, path string, ch CHandler) {
-	r.hr.Handle(method, path, func(rw http.ResponseWriter, req *http.Request, ps httprouter.Params) {
+	//r.hr.Handle(method, path, func(rw http.ResponseWriter, req *http.Request, ps httprouter.Params) {
+	r.hr.Handle(method, path, func(ctx *fasthttp.RequestCtx, p fasthttprouter.Params) {
 
 		// ctx := Context{Rw: &rw, Req: req, ps: &ps, handlerFunc: ch}
 		ctx := r.g.pool.Get().(*Context) //createContext(rw, req)
