@@ -2,7 +2,7 @@
 
 # gas
 
-<img src="https://raw.githubusercontent.com/gowebtw/gas/master/logo.png">
+<img src="https://raw.githubusercontent.com/gowebtw/gas/master/logo.jpg">
 
 Gas is a Web framework written in Go. And this is not a total complete project.
 
