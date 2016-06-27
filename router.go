@@ -1,13 +1,13 @@
 package gas
 
 import (
-	"net/http"
+	//"net/http"
 	"reflect"
 	"strings"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
 	//"github.com/julienschmidt/httprouter"
-	"github.com/julienschmidt/httprouter"
+	//"github.com/julienschmidt/httprouter"
 )
 
 var supportRestProto = [7]string{"GET", "POST", "DELETE", "HEAD", "OPTIONS", "PUT", "PATCH"}
@@ -16,30 +16,96 @@ type (
 
 	// Router class include httprouter and gas
 	Router struct {
+		*fasthttprouter.Router
 		g           *gas
-		hr          fasthttprouter.Router
 		middlewares []MiddlewareFunc
 	}
 
 	// MiddlewareFunc middlewarefunc define
-	MiddlewareFunc func(CHandler) CHandler
+	MiddlewareFunc func(GasHandler) GasHandler
 
 	// CHandler is a function type for rout handler
-	CHandler func(*Context) error
+	GasHandler func(*Context) error
 
 	// PanicHandler defined panic handler
 	PanicHandler func(*Context, interface{}) error
 )
 
-// SetNotFoundHandler  set Notfound and Panic handler
-func (r *Router) SetNotFoundHandler(h CHandler) {
+func newRouter(g *gas) *Router {
+	fastR := fasthttprouter.New()
+	r := &Router{}
+	r.Router = fastR
+	r.g = g
 
-	r.hr.NotFound = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		ctx := r.g.pool.Get().(*Context) //createContext(rw, req)
-		ctx.reset(w, req, r.g)
+	return r
+}
+
+//func (r *Router) wrapGasHandlerToFasthttpRequestHandler(h GasHandler) fasthttp.RequestHandler {
+//	// type RequestHandler func(ctx *RequestCtx)
+//	return func(ctx *fasthttp.RequestCtx) {
+//		gasCtx := r.g.pool.Get().(*Context)
+//		gasCtx.reset(ctx, nil, r.g)
+//
+//		// chain middleware functions
+//		var cpch GasHandler // copy handle avoid repeat chain
+//		cpch = h
+//
+//		for i := len(r.middlewares) - 1; i >= 0; i-- {
+//			cpch = r.middlewares[i](cpch)
+//		}
+//
+//		if err := cpch(ctx); err != nil {
+//			// handle error
+//		}
+//
+//		if gasCtx.isUseDB {
+//			defer gasCtx.CloseDB()
+//		}
+//
+//		// ctx.handlerFunc = ch
+//		// ctx.Next()
+//
+//		r.g.pool.Put(gasCtx)
+//	}
+//}
+
+func (r *Router) wrapGasHandlerToFasthttpRouterHandler(h GasHandler) fasthttprouter.Handle{
+	// type Handle func(*fasthttp.RequestCtx, Params)
+	return func(ctx *fasthttp.RequestCtx, ps fasthttprouter.Params) {
+		gasCtx := r.g.pool.Get().(*Context)
+		gasCtx.reset(ctx, &ps, r.g)
 
 		// chain middleware functions
-		var cpch CHandler // copy handle avoid repeat chain
+		var cpch GasHandler // copy handle avoid repeat chain
+		cpch = h
+
+		for i := len(r.middlewares) - 1; i >= 0; i-- {
+			cpch = r.middlewares[i](cpch)
+		}
+
+		if err := cpch(gasCtx); err != nil {
+			// handle error
+		}
+
+		if gasCtx.isUseDB {
+			defer gasCtx.CloseDB()
+		}
+
+		// ctx.handlerFunc = ch
+		// ctx.Next()
+
+		r.g.pool.Put(gasCtx)
+	}
+}
+
+// SetNotFoundHandler  set Notfound and Panic handler
+func (r *Router) SetNotFoundHandler(h GasHandler) {
+	r.NotFound = func(fctx *fasthttp.RequestCtx) {
+		ctx := r.g.pool.Get().(*Context) //createContext(rw, req)
+		ctx.reset(fctx, nil, r.g)
+
+		// chain middleware functions
+		var cpch GasHandler // copy handle avoid repeat chain
 		cpch = h
 
 		for i := len(r.middlewares) - 1; i >= 0; i-- {
@@ -51,17 +117,31 @@ func (r *Router) SetNotFoundHandler(h CHandler) {
 		}
 
 		r.g.pool.Put(ctx)
-	})
+	}
+	//r.NotFound = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+	//	ctx := r.g.pool.Get().(*Context) //createContext(rw, req)
+	//	ctx.reset(w, req, r.g)
+	//
+	//	// chain middleware functions
+	//	var cpch GasHandler // copy handle avoid repeat chain
+	//	cpch = h
+	//
+	//	for i := len(r.middlewares) - 1; i >= 0; i-- {
+	//		cpch = r.middlewares[i](cpch)
+	//	}
+	//
+	//	if err := cpch(ctx); err != nil {
+	//
+	//	}
+	//
+	//	r.g.pool.Put(ctx)
+	//})
 }
 
 func (r *Router) SetPanicHandler(ph PanicHandler) {
-	r.hr.PanicHandler = func(w http.ResponseWriter, req *http.Request, rcv interface{}) {
-		// c := a.createContext(w, req)
-		// a.panicFunc(c, rcv)
-		// a.pool.Put(c)
-
+	r.PanicHandler = func(fctx *fasthttp.RequestCtx, rcv interface{}) {
 		ctx := r.g.pool.Get().(*Context) //createContext(rw, req)
-		ctx.reset(w, req, r.g)
+		ctx.reset(fctx, nil, r.g)
 
 		if err := ph(ctx, rcv); err != nil {
 
@@ -69,6 +149,20 @@ func (r *Router) SetPanicHandler(ph PanicHandler) {
 
 		r.g.pool.Put(ctx)
 	}
+	//r.hr.PanicHandler = func(w http.ResponseWriter, req *http.Request, rcv interface{}) {
+	//	// c := a.createContext(w, req)
+	//	// a.panicFunc(c, rcv)
+	//	// a.pool.Put(c)
+	//
+	//	ctx := r.g.pool.Get().(*Context) //createContext(rw, req)
+	//	ctx.reset(w, req, r.g)
+	//
+	//	if err := ph(ctx, rcv); err != nil {
+	//
+	//	}
+	//
+	//	r.g.pool.Put(ctx)
+	//}
 }
 
 func (r *Router) Use(m interface{}) {
@@ -82,9 +176,9 @@ func wrapMiddleware(m interface{}) MiddlewareFunc {
 	switch m := m.(type) {
 	case MiddlewareFunc:
 		return m
-	case func(CHandler) CHandler:
+	case func(GasHandler) GasHandler:
 		return m
-	case CHandler:
+	case GasHandler:
 		return wrapHandlerFuncToMiddlewareFunc(m)
 	case func(c *Context) error:
 		return wrapHandlerFuncToMiddlewareFunc(m)
@@ -94,8 +188,8 @@ func wrapMiddleware(m interface{}) MiddlewareFunc {
 	}
 }
 
-func wrapHandlerFuncToMiddlewareFunc(m CHandler) MiddlewareFunc {
-	return func(h CHandler) CHandler {
+func wrapHandlerFuncToMiddlewareFunc(m GasHandler) MiddlewareFunc {
+	return func(h GasHandler) GasHandler {
 		return func(c *Context) error {
 			if err := m(c); err != nil {
 				return err
@@ -106,98 +200,72 @@ func wrapHandlerFuncToMiddlewareFunc(m CHandler) MiddlewareFunc {
 	}
 }
 
-func (r *Router) setRoute(method, path string, ch CHandler) {
+func (r *Router) setRoute(method, path string, ch GasHandler) {
 	//r.hr.Handle(method, path, func(rw http.ResponseWriter, req *http.Request, ps httprouter.Params) {
-	r.hr.Handle(method, path, func(ctx *fasthttp.RequestCtx, p fasthttprouter.Params) {
-
-		// ctx := Context{Rw: &rw, Req: req, ps: &ps, handlerFunc: ch}
-		ctx := r.g.pool.Get().(*Context) //createContext(rw, req)
-		ctx.reset(rw, req, r.g)
-		ctx.ps = &ps
-
-		// chain middleware functions
-		var cpch CHandler // copy handle avoid repeat chain
-		cpch = ch
-
-		for i := len(r.middlewares) - 1; i >= 0; i-- {
-			cpch = r.middlewares[i](cpch)
-		}
-
-		if err := cpch(ctx); err != nil {
-			// handle error
-		}
-
-		if ctx.isUseDB {
-			defer ctx.CloseDB()
-		}
-
-		// ctx.handlerFunc = ch
-		// ctx.Next()
-
-		r.g.pool.Put(ctx)
-	})
+	r.Handle(method, path, r.wrapGasHandlerToFasthttpRouterHandler(ch))
 }
 
-func checkHandler(h interface{}) CHandler {
+//func checkHandler(h interface{}) GasHandler {
+//
+//	switch h := h.(type) {
+//	case GasHandler:
+//		return h
+//	case func(*Context) error:
+//		return h
+//	default:
+//		panic("handler type error")
+//	}
+//}
 
-	switch h := h.(type) {
-	case CHandler:
-		return h
-	case func(*Context) error:
-		return h
-	default:
-		panic("handler type error")
-	}
-}
-
-func (r *Router) set(method, path string, ch CHandler) {
+func (r *Router) set(method, path string, ch GasHandler) {
 	r.setRoute(method, path, ch)
 }
 
 // Get REST funcs
-func (r *Router) Get(path string, ch CHandler) {
+func (r *Router) Get(path string, ch GasHandler) {
 	r.set("GET", path, ch)
 }
 
 // Post REST funcs
-func (r *Router) Post(path string, ch CHandler) {
+func (r *Router) Post(path string, ch GasHandler) {
 	r.set("POST", path, ch)
 }
 
 // Delete REST funcs
-func (r *Router) Delete(path string, ch CHandler) {
+func (r *Router) Delete(path string, ch GasHandler) {
 	r.set("DELETE", path, ch)
 }
 
 // Head REST funcs
-func (r *Router) Head(path string, ch CHandler) {
+func (r *Router) Head(path string, ch GasHandler) {
 	r.set("HEAD", path, ch)
 }
 
 // Options REST funcs
-func (r *Router) Options(path string, ch CHandler) {
+func (r *Router) Options(path string, ch GasHandler) {
 	r.set("OPTIONS", path, ch)
 }
 
 // Put REST funcs
-func (r *Router) Put(path string, ch CHandler) {
+func (r *Router) Put(path string, ch GasHandler) {
 	r.set("PUT", path, ch)
 }
 
 // Patch REST funcs
-func (r *Router) Patch(path string, ch CHandler) {
+func (r *Router) Patch(path string, ch GasHandler) {
 	r.set("PATCH", path, ch)
 }
 
 func (r *Router) StaticPath(dir string) {
-	fileServer := http.FileServer(http.Dir(dir))
 
-	r.hr.GET("/"+dir+"/*filepath", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		w.Header().Set("Vary", "Accept-Encoding")
-		w.Header().Set("Cache-Control", "public, max-age=7776000")
-		r.URL.Path = p.ByName("filepath")
-		fileServer.ServeHTTP(w, r)
-	})
+	//fileServer := http.FileServer(http.Dir(dir))
+
+	//r.hr.GET("/"+dir+"/*filepath", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	//	w.Header().Set("Vary", "Accept-Encoding")
+	//	w.Header().Set("Cache-Control", "public, max-age=7776000")
+	//	r.URL.Path = p.ByName("filepath")
+	//	fileServer.ServeHTTP(w, r)
+	//})
 }
 
 // REST for set all REST route
@@ -224,6 +292,6 @@ func checkSupportProto(proto string) bool {
 	return false
 }
 
-func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	r.hr.ServeHTTP(w, req)
-}
+//func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+//	r.ServeHTTP(w, req)
+//}

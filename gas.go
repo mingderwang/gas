@@ -90,11 +90,12 @@ import (
 	"fmt"
 	"github.com/go-gas/gas/logger"
 	"github.com/go-gas/gas/model"
-	"net/http"
+	//"net/http"
 	"strings"
 	"sync"
 	"github.com/go-gas/Config"
 	"github.com/go-gas/gas/model/MySQL"
+	"github.com/valyala/fasthttp"
 )
 
 const (
@@ -183,7 +184,7 @@ func New(configPath ...string) *gas {
 	g.pool.New = func() interface{} {
 		// c := &Context{}
 		// c.Writer = &c.writercache
-		c := createContext(new(ResponseWriter), nil, g)
+		c := createContext(nil, g)
 
 		return c
 	}
@@ -204,7 +205,7 @@ func New(configPath ...string) *gas {
 	}
 
 	// set router
-	g.Router = &Router{g: g}
+	g.Router = newRouter(g)//&Router{g: g}
 
 	// set default not found handler
 	g.Router.SetNotFoundHandler(defaultNotFoundHandler)
@@ -261,7 +262,7 @@ func (g *gas) LoadConfig(configPath string) {
 // Run framework
 func (g *gas) Run() {
 	fmt.Println("Server is Listen on: " + g.Config.GetString("ListenAddr") + ":" + g.Config.GetString("ListenPort"))
-	if err := http.ListenAndServe(g.Config.GetString("ListenAddr")+":"+g.Config.GetString("ListenPort"), g.Router); err != nil {
+	if err := fasthttp.ListenAndServe(g.Config.GetString("ListenAddr")+":"+g.Config.GetString("ListenPort"), g.Router.Handler); err != nil {
 		panic(err)
 	}
 }

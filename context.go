@@ -5,18 +5,21 @@ import (
 	"errors"
 	"github.com/go-gas/gas/model"
 	//"github.com/julienschmidt/httprouter"
-	"golang.org/x/net/context"
+	//"golang.org/x/net/context"
 	"html/template"
 	//"net/http"
 
 	"github.com/valyala/fasthttp"
 	"github.com/buaazp/fasthttprouter"
+	//"fmt"
 )
 
 type Context struct {
-	context.Context
-	RespWriter *ResponseWriter
-	Req        *fasthttp.Request
+	//context.Context
+	*fasthttp.RequestCtx
+
+	//RespWriter *ResponseWriter
+	//Req        *fasthttp.Request
 	ps         *fasthttprouter.Params
 
 
@@ -31,10 +34,10 @@ type Context struct {
 
 // create context
 //func createContext(w *ResponseWriter, r *http.Request, g *gas) *Context {
-func createContext(w *ResponseWriter, r *fasthttp.Request, g *gas) *Context {
+func createContext(r *fasthttp.RequestCtx, g *gas) *Context {
 	c := &Context{}
-	c.RespWriter = w
-	c.Req = r
+	//c.RespWriter = w
+	c.RequestCtx = r
 	c.gas = g
 
 	return c
@@ -44,11 +47,12 @@ func createContext(w *ResponseWriter, r *fasthttp.Request, g *gas) *Context {
 //func (ctx *Context) reset(w http.ResponseWriter, r *http.Request, g *gas) {
 //	ctx.Req = r
 //func (ctx *Context) reset(w http.ResponseWriter, r *http.Request, g *Goslim) {
-func (ctx *Context) reset(fctx *fasthttp.RequestCtx, g *gas) {
+func (ctx *Context) reset(fctx *fasthttp.RequestCtx, ps *fasthttprouter.Params, g *gas) {
 
-	ctx.Req = fctx.Request
-	ctx.RespWriter.reset(w)
-
+	//ctx.Req = fctx.Request
+	//ctx.RespWriter.reset(w)
+	ctx.RequestCtx = fctx
+	ctx.ps = ps
 	ctx.gas = g
 
 	ctx.mobj = nil
@@ -61,16 +65,28 @@ func (ctx *Context) reset(fctx *fasthttp.RequestCtx, g *gas) {
 
 // Get parameter from post or get value
 func (ctx *Context) GetParam(name string) string {
-	if ctx.Req.PostForm == nil || ctx.Req.Form == nil {
-		ctx.Req.ParseForm()
-	}
+	//if ctx.Req.PostForm == nil || ctx.Req.Form == nil {
+	//	ctx.Req.ParseForm()
+	//}
+	//
+	//if v := ctx.Req.FormValue(name); v != "" {
+	//	return v
+	//}
 
-	if v := ctx.Req.FormValue(name); v != "" {
-		return v
+	if fv := ctx.FormValue(name); fv != nil {
+		return string(fv)
 	}
 
 	return ctx.ps.ByName(name)
 }
+
+//func (ctx *Context) GetFormValue(name string) string {
+//	if fv := ctx.FormValue(name); fv != nil {
+//		return string(fv)
+//	}
+//
+//	return ""
+//}
 
 // func (ctx *Context) GetAllParams()  {
 //     res := make(map[string]string, 0)
@@ -86,7 +102,7 @@ func (ctx *Context) Render(data interface{}, tplPath ...string) error {
 		return errors.New("File path can not be empty")
 	}
 
-	ctx.RespWriter.Header().Set(ContentType, TextHTMLCharsetUTF8)
+	ctx.SetContentType(TextHTMLCharsetUTF8)
 
 	// tpls := strings.Join(tplPath, ", ")
 	tmpl := template.New("gas")
@@ -95,7 +111,7 @@ func (ctx *Context) Render(data interface{}, tplPath ...string) error {
 		tmpl = template.Must((tmpl.ParseFiles(tpath)))
 	}
 
-	err := tmpl.Execute(ctx.RespWriter, data)
+	err := tmpl.Execute(ctx, data)
 
 	return err
 	// if err != nil {
@@ -111,9 +127,9 @@ func (ctx *Context) Render(data interface{}, tplPath ...string) error {
 // Set the response data-type to html
 func (ctx *Context) HTML(code int, html string) error {
 
-	ctx.RespWriter.Header().Set(ContentType, TextHTMLCharsetUTF8)
-	ctx.RespWriter.WriteHeader(code)
-	_, err := ctx.RespWriter.Write([]byte(html))
+	ctx.SetContentType(TextHTMLCharsetUTF8)
+	ctx.SetStatusCode(code)// .RespWriter.WriteHeader(code)
+	_, err := ctx.Write([]byte(html))//_, err := ctx.RespWriter.Write([]byte(html))
 
 	return err
 }
@@ -121,18 +137,25 @@ func (ctx *Context) HTML(code int, html string) error {
 // Set the response data-type to plain text
 func (ctx *Context) STRING(status int, data string) error {
 
-	ctx.RespWriter.Header().Set(ContentType, TextPlainCharsetUTF8)
-	ctx.RespWriter.WriteHeader(status)
-	_, err := ctx.RespWriter.Write([]byte(data))
+	//ctx.RespWriter.Header().Set(ContentType, TextPlainCharsetUTF8)
+	//ctx.RespWriter.WriteHeader(status)
+	//_, err := ctx.RespWriter.Write([]byte(data))
 
+	if ctx.IsGet() {
+		ctx.SetContentType(TextPlainCharsetUTF8)
+	} else {
+		ctx.SetContentType(ApplicationForm)
+	}
+	ctx.SetStatusCode(status)
+	_, err := ctx.Write([]byte(data))
 	return err
 }
 
 // Set response data-type to json and try to json encode
 func (ctx *Context) JSON(status int, data interface{}) error {
 
-	ctx.RespWriter.Header().Set(ContentType, ApplicationJSONCharsetUTF8)
-	ctx.RespWriter.WriteHeader(status)
+	ctx.SetContentType(ApplicationJSONCharsetUTF8)
+	ctx.SetStatusCode(status)
 
 	// encode json string
 	jsonstr, err := json.Marshal(data)
@@ -140,7 +163,7 @@ func (ctx *Context) JSON(status int, data interface{}) error {
 		return err
 	}
 	// fmt.Fprint(ctx.Writer, data)
-	_, errr := ctx.RespWriter.Write(jsonstr)
+	_, errr := ctx.Write(jsonstr)
 
 	return errr
 }
