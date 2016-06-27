@@ -260,9 +260,15 @@ func (g *gas) LoadConfig(configPath string) {
 }
 
 // Run framework
-func (g *gas) Run() {
-	fmt.Println("Server is Listen on: " + g.Config.GetString("ListenAddr") + ":" + g.Config.GetString("ListenPort"))
-	if err := fasthttp.ListenAndServe(g.Config.GetString("ListenAddr")+":"+g.Config.GetString("ListenPort"), g.Router.Handler); err != nil {
+func (g *gas) Run(addr ...string) {
+	listenAddr := ""
+	if len(addr) == 0 {
+		listenAddr = g.Config.GetString("ListenAddr") + ":" + g.Config.GetString("ListenPort")
+	} else {
+		listenAddr = addr[0]
+	}
+	fmt.Println("Server is Listen on: " + listenAddr)
+	if err := fasthttp.ListenAndServe(listenAddr, g.Router.Handler); err != nil {
 		panic(err)
 	}
 }
