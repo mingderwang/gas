@@ -161,7 +161,7 @@ Using [go-web-framework-benchmark](https://github.com/smallnest/go-web-framework
 
 But gas is very new, so in the future
 
-I wish this framework might not be a fastest but it's a very fast and full feature framework.
+I wish this framework might not be a fastest but it will very fast and full featured.
 
 ### Roadmap
 - [ ] Models
