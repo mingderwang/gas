@@ -5,10 +5,11 @@ import (
 	//"net/http/httptest"
 	"testing"
 	//
-	//"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
 	"github.com/gavv/httpexpect"
 	"github.com/valyala/fasthttp"
 	"net/http"
+	"github.com/go-gas/gas/model/MySQL"
 )
 
 var (
@@ -72,4 +73,14 @@ func Testgas(t *testing.T) {
 //
 func indexPage(ctx *Context) error {
 	return ctx.STRING(200, indexString)
+}
+
+func TestGas_NewModel(t *testing.T) {
+	as := assert.New(t)
+
+	// new gas
+	g := New("testfiles/config_test.yaml")
+	m := g.NewModel()
+
+	as.IsType(&MySQLModel.MySQLModel{}, m)
 }

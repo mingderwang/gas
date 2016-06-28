@@ -149,6 +149,8 @@ var defaultConfig = map[interface{}]interface{} {
 	"PubDir":     "public",
 	"Db":	map[interface{}]interface{} {
 		"SqlDriver": "MySQL",
+		"Hostname": "localhost",
+		"Port": "3306",
 		"Username": "root",
 		"Password": "",
 		"Charset": "utf8",
