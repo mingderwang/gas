@@ -10,14 +10,14 @@ I just did a minimum workable architechture.
 
 The workable feature is:
 
-- Router (based on [httprouter] package)
+- Router (based on [fasthttprouter](https://github.com/buaazp/fasthttprouter) package)
 - Context (It can easy to render view and print json string)
 - Middleware
 - Logger middleware
 - Log package
 - Read config from a yaml file
 
-And Model is not complete yet. Just finished MySQL SELECT statement Builder
+And Model is not complete yet. Just finished MySQL sql Builder
 
 ##### all feature you can see in Example Directory.
 
@@ -121,6 +121,48 @@ func LogMiddleware(next gas.CHandler) gas.CHandler {
 g.Run()
 ```
 
+# Benchmark
+
+Using [go-web-framework-benchmark](https://github.com/smallnest/go-web-framework-benchmark) to benchmark with another web fframework.
+
+<img src="https://raw.githubusercontent.com/go-gas/gas/master/benchmark.png" alt="go-gas-benchmark" />
+
+#### Benchmark-alloc
+
+<img src="https://raw.githubusercontent.com/go-gas/gas/master/benchmark_alloc.png" alt="go-gas-benchmark-alloc" />
+
+#### Benchmark-latency
+
+<img src="https://raw.githubusercontent.com/go-gas/gas/master/benchmark_latency.png" alt="go-gas-benchmark-latency" />
+
+#### Benchmark-pipeline
+
+<img src="https://raw.githubusercontent.com/go-gas/gas/master/benchmark-pipeline.png" alt="go-gas-benchmark-pipeline" />
+
+## Concurrency
+
+<img src="https://raw.githubusercontent.com/go-gas/gas/master/concurrency.png" alt="go-gas-concurrency" />
+
+#### Concurrency-alloc
+
+<img src="https://raw.githubusercontent.com/go-gas/gas/master/concurrency_alloc.png" alt="go-gas-concurrency-alloc" />
+
+#### Concurrency-latency
+
+<img src="https://raw.githubusercontent.com/go-gas/gas/master/concurrency_latency.png" alt="go-gas-concurrency-latency" />
+
+#### Concurrency-pipeline
+
+<img src="https://raw.githubusercontent.com/go-gas/gas/master/concurrency-pipeline.png" alt="go-gas-concurrency-pipeline" />
+
+## Benchmark conclusion
+
+[Iris](https://github.com/kataras/iris) is still the fastest web framework.
+
+But gas is very new, so in the future
+
+I wish this framework might not be a fastest but it's a very fast and full feature framework.
+
 ### Roadmap
 - [ ] Models
  - [ ] Model fields mapping
@@ -143,6 +185,3 @@ g.Run()
 - [ ] Command line tools
 - [ ] Form handler (maybe next version)
 - [ ] Security check features(csrf, xss filter...etc)
-
-
-[httprouter]: <https://github.com/julienschmidt/httprouter>
