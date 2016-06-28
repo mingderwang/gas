@@ -1,11 +1,10 @@
 package gas
 
 import (
-	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"net/http"
-	"net/http/httptest"
 	"testing"
+	"github.com/gavv/httpexpect"
+	"encoding/json"
 )
 
 var (
@@ -27,8 +26,6 @@ var (
 )
 
 func TestRender(t *testing.T) {
-	as := assert.New(t)
-
 	// new gas
 	g := New("testfiles/config_test.yaml")
 
@@ -37,19 +34,25 @@ func TestRender(t *testing.T) {
 		return ctx.Render(jsonMap, "testfiles/layout.html", "testfiles/index.html")
 	})
 
-	// create request
-	req, _ := http.NewRequest("GET", "/", nil)
-	rec := httptest.NewRecorder()
-	g.Router.ServeHTTP(rec, req)
+	// create fasthttp.RequestHandler
+	handler := g.Router.Handler
 
-	as.Equal(200, rec.Code)
-	as.Equal(testHTML, rec.Body.String())
-	as.Equal(TextHTMLCharsetUTF8, rec.Header().Get(ContentType))
+	// create httpexpect instance that will call fasthtpp.RequestHandler directly
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client:   httpexpect.NewFastBinder(handler),
+	})
+
+	// run tests
+	e.GET("/").
+	Expect().
+	Status(http.StatusOK).
+	ContentType("text/html", "utf-8").
+	Body().Equal(testHTML)
+
 }
 
 func TestHTML(t *testing.T) {
-	as := assert.New(t)
-
 	// new gas
 	g := New("testfiles/config_test.yaml")
 
@@ -58,18 +61,26 @@ func TestHTML(t *testing.T) {
 		return ctx.HTML(200, testHTML)
 	})
 
-	// create request
-	req, _ := http.NewRequest("GET", "/", nil)
-	rec := httptest.NewRecorder()
-	g.Router.ServeHTTP(rec, req)
+	// create fasthttp.RequestHandler
+	handler := g.Router.Handler
 
-	as.Equal(200, rec.Code)
-	as.Equal(testHTML, rec.Body.String())
-	as.Equal(TextHTMLCharsetUTF8, rec.Header().Get(ContentType))
+	// create httpexpect instance that will call fasthtpp.RequestHandler directly
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client:   httpexpect.NewFastBinder(handler),
+	})
+
+	// run tests
+	e.GET("/").
+	Expect().
+	Status(http.StatusOK).
+	ContentType("text/html", "utf-8").
+	Body().Equal(testHTML)
+
 }
 
 func TestSTRINGResponse(t *testing.T) {
-	as := assert.New(t)
+	//as := assert.New(t)
 
 	// new gas
 	g := New("testfiles/config_test.yaml")
@@ -79,18 +90,27 @@ func TestSTRINGResponse(t *testing.T) {
 		return ctx.STRING(200, tstr)
 	})
 
-	// create request
-	req, _ := http.NewRequest("GET", "/", nil)
-	rec := httptest.NewRecorder()
-	g.Router.ServeHTTP(rec, req)
+	// create fasthttp.RequestHandler
+	handler := g.Router.Handler
 
-	as.Equal(200, rec.Code)
-	as.Equal(tstr, rec.Body.String())
-	as.Equal(TextPlainCharsetUTF8, rec.Header().Get(ContentType))
+	// create httpexpect instance that will call fasthtpp.RequestHandler directly
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client:   httpexpect.NewFastBinder(handler),
+	})
+
+	// run tests
+	e.GET("/").
+	Expect().
+	Status(http.StatusOK).
+	ContentType("text/plain", "utf-8").
+	Body().Equal(tstr)
+
+
 }
 
 func TestJSONResponse(t *testing.T) {
-	as := assert.New(t)
+	//as := assert.New(t)
 
 	// new gas
 	g := New("testfiles/config_test.yaml")
@@ -100,13 +120,22 @@ func TestJSONResponse(t *testing.T) {
 		return ctx.JSON(200, jsonMap)
 	})
 
-	// create request
-	req, _ := http.NewRequest("GET", "/", nil)
-	rec := httptest.NewRecorder()
-	g.Router.ServeHTTP(rec, req)
+	// create fasthttp.RequestHandler
+	handler := g.Router.Handler
 
-	as.Equal(200, rec.Code)
+	// create httpexpect instance that will call fasthtpp.RequestHandler directly
+	e := httpexpect.WithConfig(httpexpect.Config{
+		Reporter: httpexpect.NewAssertReporter(t),
+		Client:   httpexpect.NewFastBinder(handler),
+	})
+
 	js, _ := json.Marshal(jsonMap)
-	as.Equal(string(js), rec.Body.String())
-	as.Equal(ApplicationJSONCharsetUTF8, rec.Header().Get(ContentType))
+
+	// run tests
+	e.GET("/").
+	Expect().
+	Status(http.StatusOK).
+	ContentType("application/json", "utf-8").
+	Body().Equal(string(js))
+
 }

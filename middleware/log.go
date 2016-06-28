@@ -9,16 +9,16 @@ import (
 	"time"
 )
 
-func LogMiddleware(next gas.CHandler) gas.CHandler {
+func LogMiddleware(next gas.GasHandler) gas.GasHandler {
 	return func(c *gas.Context) error {
 		// req := c.Request()
 		// res := c.Response()
 		l := logger.New("log/logs.txt")
 
-		remoteAddr := c.Req.RemoteAddr
-		if ip := c.Req.Header.Get(gas.XRealIP); ip != "" {
+		remoteAddr := c.RemoteAddr().String()
+		if ip := string(c.Request.Header.Peek(gas.XRealIP)); ip != "" {
 			remoteAddr = ip
-		} else if ip = c.Req.Header.Get(gas.XForwardedFor); ip != "" {
+		} else if ip = string(c.Request.Header.Peek(gas.XForwardedFor)); ip != "" {
 			remoteAddr = ip
 		} else {
 			remoteAddr, _, _ = net.SplitHostPort(remoteAddr)
@@ -29,18 +29,18 @@ func LogMiddleware(next gas.CHandler) gas.CHandler {
 		err := next(c)
 
 		stop := time.Now()
-		method := c.Req.Method
-		path := c.Req.URL.Path
+		method := string(c.Method())
+		path := string(c.Path())
 		if path == "" {
 			path = "/"
 		}
 		// size := c.Writer.Size()
 
-		status := c.RespWriter.Status()
+		status := c.Response.StatusCode()//RespWriter.Status()
 
 		// logger.Printf(format, remoteAddr, method, path, code, stop.Sub(start), size)
 
-		logstr := "[" + start.Format("2006-01-02 15:04:05") + "][" + strconv.Itoa(status) + "][" + remoteAddr + "] " + method + " " + path + " Params: " + c.Req.Form.Encode() + " ExecTime: " + stop.Sub(start).String()
+		logstr := "[" + start.Format("2006-01-02 15:04:05") + "][" + strconv.Itoa(status) + "][" + remoteAddr + "] " + method + " " + path + " Params: " + c.Request.PostArgs().String() + " ExecTime: " + stop.Sub(start).String()
 		l.Info(logstr)
 
 		return err
