@@ -1,8 +1,8 @@
-[![Build Status](https://api.travis-ci.org/go-gas/gas.svg?branch=master)](https://api.travis-ci.org/go-gas/gas.svg)
-
 # Gas
 
 <img src="https://raw.githubusercontent.com/go-gas/gas/master/logo.jpg" alt="go-gas" width="200px" />
+
+[![Build Status](https://api.travis-ci.org/go-gas/gas.svg?branch=master)](https://api.travis-ci.org/go-gas/gas.svg) [![Go Report Card](https://goreportcard.com/badge/github.com/go-gas/gas)](https://goreportcard.com/report/github.com/go-gas/gas)
 
 Gas is a Web framework written in Go. And this is not a total complete project.
 
@@ -83,13 +83,13 @@ import (
 )
 
 func RegistRout(r *gas.Router)  {
-    
+
     r.Get("/", controllers.IndexPage)
     r.Post("/post/:param", controllers.PostTest)
-    
+
     rc := &controllers.RestController{}
     r.REST("/User", rc)
-    
+
 }
 ```
 
@@ -103,13 +103,13 @@ And you can write your own middleware function
 ```go
 func LogMiddleware(next gas.CHandler) gas.CHandler {
     return func (c *gas.Context) error  {
-       
+
        // do something before next handler
-       
+
        err := next(c)
-       
+
        // do something after next handler
-       
+
        return err
     }
 }
