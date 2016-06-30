@@ -40,7 +40,7 @@ type BuilderWraperInterface interface {
 type Model struct {
 	ModelInterface // implements ModelInterface
 
-	b  SQLBuilder.BuilderInterface // model has builder
+	b SQLBuilder.BuilderInterface // model has builder
 }
 
 func (m *Model) SetBuilder(b SQLBuilder.BuilderInterface) {

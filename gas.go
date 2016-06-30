@@ -91,11 +91,11 @@ import (
 	"github.com/go-gas/gas/logger"
 	"github.com/go-gas/gas/model"
 	//"net/http"
-	"strings"
-	"sync"
 	"github.com/go-gas/Config"
 	"github.com/go-gas/gas/model/MySQL"
 	"github.com/valyala/fasthttp"
+	"strings"
+	"sync"
 )
 
 const (
@@ -142,18 +142,18 @@ const (
 	XRealIP            = "X-Real-IP"
 )
 
-var defaultConfig = map[interface{}]interface{} {
+var defaultConfig = map[interface{}]interface{}{
 	"Mode":       "DEV",
 	"ListenAddr": "localhost",
 	"ListenPort": "8080",
 	"PubDir":     "public",
-	"Db":	map[interface{}]interface{} {
+	"Db": map[interface{}]interface{}{
 		"SqlDriver": "MySQL",
-		"Hostname": "localhost",
-		"Port": "3306",
-		"Username": "root",
-		"Password": "",
-		"Charset": "utf8",
+		"Hostname":  "localhost",
+		"Port":      "3306",
+		"Username":  "root",
+		"Password":  "",
+		"Charset":   "utf8",
 	},
 }
 
@@ -194,7 +194,7 @@ func New(configPath ...string) *gas {
 	// load config
 	g.Config = Config.New(defaultConfig)
 	if len(configPath) == 0 {
-		configPath = []string {"config/default.yaml"}
+		configPath = []string{"config/default.yaml"}
 	}
 
 	//// Only load first config (maybe load multi config next version)
@@ -207,7 +207,7 @@ func New(configPath ...string) *gas {
 	}
 
 	// set router
-	g.Router = newRouter(g)//&Router{g: g}
+	g.Router = newRouter(g) //&Router{g: g}
 
 	// set default not found handler
 	g.Router.SetNotFoundHandler(defaultNotFoundHandler)

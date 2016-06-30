@@ -5,15 +5,15 @@ import (
 	//"net/http/httptest"
 	"testing"
 	//
-	"github.com/stretchr/testify/assert"
 	"github.com/gavv/httpexpect"
+	"github.com/go-gas/gas/model/MySQL"
+	"github.com/stretchr/testify/assert"
 	"github.com/valyala/fasthttp"
 	"net/http"
-	"github.com/go-gas/gas/model/MySQL"
 )
 
 var (
-	indexString = "indexpage"
+	indexString      = "indexpage"
 	testStaticString = "This is a static file"
 )
 
@@ -41,7 +41,6 @@ func Testgas(t *testing.T) {
 
 	e := newHttpExpect(t, g.Router.Handler)
 	e.GET("/").Expect().Status(http.StatusOK).Body().Equal(indexString)
-
 
 	// create request
 	//req, _ := http.NewRequest("GET", "/", nil)

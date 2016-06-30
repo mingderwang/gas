@@ -2,10 +2,10 @@ package gas
 
 import (
 	//"net/http"
-	"reflect"
-	"strings"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
+	"reflect"
+	"strings"
 	//"github.com/julienschmidt/httprouter"
 	//"github.com/julienschmidt/httprouter"
 )
@@ -69,7 +69,7 @@ func newRouter(g *gas) *Router {
 //	}
 //}
 
-func (r *Router) wrapGasHandlerToFasthttpRouterHandler(h GasHandler) fasthttprouter.Handle{
+func (r *Router) wrapGasHandlerToFasthttpRouterHandler(h GasHandler) fasthttprouter.Handle {
 	// type Handle func(*fasthttp.RequestCtx, Params)
 	return func(ctx *fasthttp.RequestCtx, ps fasthttprouter.Params) {
 		gasCtx := r.g.pool.Get().(*Context)

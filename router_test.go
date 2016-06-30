@@ -1,8 +1,8 @@
 package gas
 
 import (
-	"testing"
 	"net/http"
+	"testing"
 )
 
 func TestRouter_Get(t *testing.T) {

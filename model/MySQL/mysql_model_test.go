@@ -1,10 +1,10 @@
 package MySQLModel
 
 import (
-	"github.com/stretchr/testify/assert"
-	"testing"
-	"os"
 	"github.com/go-gas/Config"
+	"github.com/stretchr/testify/assert"
+	"os"
+	"testing"
 )
 
 type testUser struct {
@@ -44,7 +44,7 @@ var (
 	testConfig = map[string]string{
 		"Sqldriver": "MySQL",
 		"protocol":  "tcp",
-		"Port":	"3306",
+		"Port":      "3306",
 		"Hostname":  "localhost",
 		"Username":  "root",
 		"Password":  "123456",

@@ -1,10 +1,10 @@
 package gas
 
 import (
+	"encoding/json"
+	"github.com/gavv/httpexpect"
 	"net/http"
 	"testing"
-	"github.com/gavv/httpexpect"
-	"encoding/json"
 )
 
 var (
@@ -45,10 +45,10 @@ func TestRender(t *testing.T) {
 
 	// run tests
 	e.GET("/").
-	Expect().
-	Status(http.StatusOK).
-	ContentType("text/html", "utf-8").
-	Body().Equal(testHTML)
+		Expect().
+		Status(http.StatusOK).
+		ContentType("text/html", "utf-8").
+		Body().Equal(testHTML)
 
 }
 
@@ -72,10 +72,10 @@ func TestHTML(t *testing.T) {
 
 	// run tests
 	e.GET("/").
-	Expect().
-	Status(http.StatusOK).
-	ContentType("text/html", "utf-8").
-	Body().Equal(testHTML)
+		Expect().
+		Status(http.StatusOK).
+		ContentType("text/html", "utf-8").
+		Body().Equal(testHTML)
 
 }
 
@@ -101,11 +101,10 @@ func TestSTRINGResponse(t *testing.T) {
 
 	// run tests
 	e.GET("/").
-	Expect().
-	Status(http.StatusOK).
-	ContentType("text/plain", "utf-8").
-	Body().Equal(tstr)
-
+		Expect().
+		Status(http.StatusOK).
+		ContentType("text/plain", "utf-8").
+		Body().Equal(tstr)
 
 }
 
@@ -133,9 +132,9 @@ func TestJSONResponse(t *testing.T) {
 
 	// run tests
 	e.GET("/").
-	Expect().
-	Status(http.StatusOK).
-	ContentType("application/json", "utf-8").
-	Body().Equal(string(js))
+		Expect().
+		Status(http.StatusOK).
+		ContentType("application/json", "utf-8").
+		Body().Equal(string(js))
 
 }

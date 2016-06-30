@@ -1,18 +1,18 @@
 package MySQLModel
 
 import (
+	"github.com/go-gas/Config"
 	"github.com/go-gas/SQLBuilder/MySQLBuilder"
 	"github.com/go-gas/gas/model"
-	"github.com/go-gas/Config"
 )
 
 type MySQLModel struct {
 	model.Model // extend Model
 
-	b  *MySQLBuilder.MySQLBuilder
+	b *MySQLBuilder.MySQLBuilder
 }
 
-func New(cfg *Config.Config) model.ModelInterface{
+func New(cfg *Config.Config) model.ModelInterface {
 	b := MySQLBuilder.New(cfg)
 	m := &MySQLModel{}
 	m.SetBuilder(b)

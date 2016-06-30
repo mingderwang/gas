@@ -9,8 +9,8 @@ import (
 	"html/template"
 	//"net/http"
 
-	"github.com/valyala/fasthttp"
 	"github.com/buaazp/fasthttprouter"
+	"github.com/valyala/fasthttp"
 	//"fmt"
 )
 
@@ -20,8 +20,7 @@ type Context struct {
 
 	//RespWriter *ResponseWriter
 	//Req        *fasthttp.Request
-	ps         *fasthttprouter.Params
-
+	ps *fasthttprouter.Params
 
 	// handlerFunc CHandler
 
@@ -128,8 +127,8 @@ func (ctx *Context) Render(data interface{}, tplPath ...string) error {
 func (ctx *Context) HTML(code int, html string) error {
 
 	ctx.SetContentType(TextHTMLCharsetUTF8)
-	ctx.SetStatusCode(code)// .RespWriter.WriteHeader(code)
-	_, err := ctx.Write([]byte(html))//_, err := ctx.RespWriter.Write([]byte(html))
+	ctx.SetStatusCode(code)           // .RespWriter.WriteHeader(code)
+	_, err := ctx.Write([]byte(html)) //_, err := ctx.RespWriter.Write([]byte(html))
 
 	return err
 }

@@ -36,7 +36,7 @@ func LogMiddleware(next gas.GasHandler) gas.GasHandler {
 		}
 		// size := c.Writer.Size()
 
-		status := c.Response.StatusCode()//RespWriter.Status()
+		status := c.Response.StatusCode() //RespWriter.Status()
 
 		// logger.Printf(format, remoteAddr, method, path, code, stop.Sub(start), size)
 
