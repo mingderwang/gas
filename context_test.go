@@ -2,7 +2,6 @@ package gas
 
 import (
 	"encoding/json"
-	"github.com/gavv/httpexpect"
 	"net/http"
 	"testing"
 )
@@ -38,10 +37,7 @@ func TestRender(t *testing.T) {
 	handler := g.Router.Handler
 
 	// create httpexpect instance that will call fasthtpp.RequestHandler directly
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client:   httpexpect.NewFastBinder(handler),
-	})
+	e := newHttpExpect(t, handler)
 
 	// run tests
 	e.GET("/").
@@ -65,10 +61,7 @@ func TestHTML(t *testing.T) {
 	handler := g.Router.Handler
 
 	// create httpexpect instance that will call fasthtpp.RequestHandler directly
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client:   httpexpect.NewFastBinder(handler),
-	})
+	e := newHttpExpect(t, handler)
 
 	// run tests
 	e.GET("/").
@@ -94,10 +87,7 @@ func TestSTRINGResponse(t *testing.T) {
 	handler := g.Router.Handler
 
 	// create httpexpect instance that will call fasthtpp.RequestHandler directly
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client:   httpexpect.NewFastBinder(handler),
-	})
+	e := newHttpExpect(t, handler)
 
 	// run tests
 	e.GET("/").
@@ -123,10 +113,7 @@ func TestJSONResponse(t *testing.T) {
 	handler := g.Router.Handler
 
 	// create httpexpect instance that will call fasthtpp.RequestHandler directly
-	e := httpexpect.WithConfig(httpexpect.Config{
-		Reporter: httpexpect.NewAssertReporter(t),
-		Client:   httpexpect.NewFastBinder(handler),
-	})
+	e := newHttpExpect(t, handler)
 
 	js, _ := json.Marshal(jsonMap)
 

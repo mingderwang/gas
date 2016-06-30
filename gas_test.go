@@ -24,7 +24,10 @@ func newHttpExpect(t *testing.T, h fasthttp.RequestHandler) *httpexpect.Expect {
 	// create httpexpect instance that will call fasthtpp.RequestHandler directly
 	e := httpexpect.WithConfig(httpexpect.Config{
 		Reporter: httpexpect.NewAssertReporter(t),
-		Client:   httpexpect.NewFastBinder(h),
+		Client:   &http.Client{
+			Transport: httpexpect.NewFastBinder(h),
+			Jar:       httpexpect.NewJar(),
+		},
 	})
 
 	return e
