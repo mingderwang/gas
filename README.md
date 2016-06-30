@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/go-gas/gas/master/logo.jpg" alt="go-gas" width="200px" />
 
-[![Build Status](https://api.travis-ci.org/go-gas/gas.svg?branch=master)](https://api.travis-ci.org/go-gas/gas.svg) [![Go Report Card](https://goreportcard.com/badge/github.com/go-gas/gas)](https://goreportcard.com/report/github.com/go-gas/gas)
+[![Build Status](https://api.travis-ci.org/go-gas/gas.svg?branch=master)](https://api.travis-ci.org/go-gas/gas.svg) [![codecov](https://codecov.io/gh/go-gas/gas/branch/master/graph/badge.svg)](https://codecov.io/gh/go-gas/gas) [![Go Report Card](https://goreportcard.com/badge/github.com/go-gas/gas)](https://goreportcard.com/report/github.com/go-gas/gas)
 
 Gas is a Web framework written in Go. And this is not a total complete project.
 
